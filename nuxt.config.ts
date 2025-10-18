@@ -51,13 +51,7 @@ export default defineNuxtConfig({
         tsconfigRaw: {
           compilerOptions: {
             jsx: 'preserve',
-            module: 'esnext',
-            target: 'esnext',
-            moduleResolution: 'bundler',
-            allowJs: true,
-            allowSyntheticDefaultImports: true,
-            isolatedModules: true,
-            verbatimModuleSyntax: true
+            target: 'esnext'
           }
         }
       }
@@ -70,7 +64,6 @@ export default defineNuxtConfig({
   clerk: {
     publishableKey: process.env.NUXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     signInUrl: '/login',
-    signUpUrl: '/cadastro',
     skipServerMiddleware: false
   }
 })

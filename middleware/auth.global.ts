@@ -1,11 +1,12 @@
 import { getAuth } from '@clerk/nuxt/server'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const publicRoutes = ['/login', '/cadastro']
+  const publicRoutes = ['/login']
 
   // Server-side (SSR) check using Clerk server auth
   if (import.meta.server) {
     const event = useRequestEvent()
+    if (!event) return
     const { isAuthenticated } = getAuth(event)
 
     if (!isAuthenticated && !publicRoutes.includes(to.path)) {

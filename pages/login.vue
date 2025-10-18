@@ -21,7 +21,6 @@
           }"
           :routing="'path'"
           :path="'/login'"
-          :signUpUrl="'/cadastro'"
         />
       </UCard>
     </div>
