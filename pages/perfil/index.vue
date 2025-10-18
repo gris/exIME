@@ -26,7 +26,7 @@
       <UCard v-else-if="!profile" class="text-center py-12">
         <UIcon name="i-heroicons-user-circle" class="h-16 w-16 text-gray-400 mx-auto mb-4" />
         <h3 class="text-lg font-medium text-gray-900 mb-2">Você ainda não criou seu perfil</h3>
-        <p class="text-gray-600 mb-6">Crie seu perfil para aparecer no diretório de ex-alunos</p>
+        <p class="text-gray-600 mb-6">Crie seu perfil para aparecer no diretório de alunos e ex-alunos</p>
         <UButton to="/perfil/editar" color="green" size="lg">
           Criar Perfil
         </UButton>

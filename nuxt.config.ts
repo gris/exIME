@@ -29,14 +29,14 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Diretório de Ex-Alunos IME',
+      title: 'Diretório de Alunos e Ex-Alunos IME',
       link: [
         { rel: 'icon', type: 'image/png', href: '/images/ime-logo.png' }
       ],
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Diretório de ex-alunos do Instituto Militar de Engenharia' }
+        { name: 'description', content: 'Diretório de alunos e ex-alunos do Instituto Militar de Engenharia' }
       ]
     }
   },

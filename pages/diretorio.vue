@@ -10,7 +10,7 @@
               class="w-16 h-16 object-contain"
             />
             <div>
-              <h1 class="text-3xl font-bold text-gray-900">Diretório de Ex-Alunos</h1>
+              <h1 class="text-3xl font-bold text-gray-900">Diretório de Alunos e Ex-Alunos</h1>
               <p class="text-gray-600">Instituto Militar de Engenharia</p>
             </div>
           </div>
@@ -174,10 +174,6 @@
 <script setup lang="ts">
 import type { Alumni } from '~/types/alumni'
 
-const { userId } = useAuth()
-const clerk = useClerk()
-const supabase = useSupabase()
-
 const alumni = ref<Alumni[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
@@ -197,17 +193,19 @@ const fetchAlumni = async () => {
     alumni.value = (data as Alumni[]) || []
 
     // Check if user has a profile by email (using /api/alumni/me)
-    if (userId.value) {
-      try {
-        const myProfile = await $fetch<Alumni | null>('/api/alumni/me')
-        hasProfile.value = !!myProfile
-      } catch (error) {
-        console.error('Error checking user profile:', error)
-        hasProfile.value = false
-      }
+    try {
+      const myProfile = await $fetch<Alumni | null>('/api/alumni/me')
+      hasProfile.value = !!myProfile
+    } catch (error) {
+      // User not authenticated or no profile
+      hasProfile.value = false
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching alumni:', error)
+    // If unauthorized, redirect to login
+    if (error?.statusCode === 401) {
+      navigateTo('/login')
+    }
   } finally {
     loading.value = false
   }
@@ -255,7 +253,14 @@ const toggleTechnology = (tech: string) => {
 }
 
 const handleSignOut = async () => {
-  await clerk.value?.signOut({ redirectUrl: '/login' })
+  if (process.client) {
+    // Use Clerk's global signOut method
+    if (window.Clerk) {
+      await window.Clerk.signOut()
+    }
+  }
+  // Redirect to login
+  navigateTo('/login')
 }
 
 onMounted(() => {

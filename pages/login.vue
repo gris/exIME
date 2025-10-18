@@ -16,7 +16,7 @@
       <UCard>
       <div class="text-center mb-6">
         <h2 class="text-2xl font-semibold text-gray-600 mb-2">Entrar</h2>
-        <p class="text-gray-500">Acesse o diretório de ex-alunos</p>
+        <p class="text-gray-500">Acesse o diretório de alunos e ex-alunos</p>
       </div>
         
         <SignIn 
