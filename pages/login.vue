@@ -7,10 +7,10 @@
       </div>
       
       <UCard>
-        <div class="text-center mb-6">
-          <h2 class="text-2xl font-semibold text-gray-900 mb-2">Entrar</h2>
-          <p class="text-gray-600">Acesse o diretório de ex-alunos</p>
-        </div>
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-semibold text-gray-600 mb-2">Entrar</h2>
+        <p class="text-gray-500">Acesse o diretório de ex-alunos</p>
+      </div>
         
         <SignIn 
           :appearance="{
