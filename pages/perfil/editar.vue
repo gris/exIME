@@ -238,7 +238,7 @@ const fetchProfile = async () => {
             formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
           }
         } catch (authError) {
-          console.log('Could not get auth user data:', authError)
+          // Could not get auth user data
         }
       }
     }
@@ -256,7 +256,7 @@ const fetchProfile = async () => {
           formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
         }
       } catch (authError) {
-        console.log('Could not get auth user data:', authError)
+        // Could not get auth user data
       }
     }
   } finally {

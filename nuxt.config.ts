@@ -18,11 +18,11 @@ export default defineNuxtConfig({
   ],
 
   runtimeConfig: {
-    clerkSecretKey: process.env.CLERK_SECRET_KEY,
+    clerkSecretKey: process.env.NUXT_CLERK_SECRET_KEY,
     supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     public: {
       clerkPublishableKey: process.env.NUXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
-      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseUrl: process.env.SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL,
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY,
     }
   },
@@ -69,7 +69,6 @@ export default defineNuxtConfig({
   ,
   clerk: {
     publishableKey: process.env.NUXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
-    secretKey: process.env.NUXT_CLERK_SECRET_KEY,
     signInUrl: '/login',
     signUpUrl: '/cadastro',
     skipServerMiddleware: false

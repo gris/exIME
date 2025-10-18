@@ -169,9 +169,15 @@ const fetchAlumni = async () => {
     const data = await $fetch('/api/alumni')
     alumni.value = (data as Alumni[]) || []
 
+    // Check if user has a profile by email (using /api/alumni/me)
     if (userId.value) {
-      const userProfile = alumni.value.find(a => a.clerk_user_id === userId.value)
-      hasProfile.value = !!userProfile
+      try {
+        const myProfile = await $fetch<Alumni | null>('/api/alumni/me')
+        hasProfile.value = !!myProfile
+      } catch (error) {
+        console.error('Error checking user profile:', error)
+        hasProfile.value = false
+      }
     }
   } catch (error) {
     console.error('Error fetching alumni:', error)

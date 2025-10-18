@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   )
 
   try {
-    // Get user email from Clerk - this is our primary identifier
+    // Get user email from Clerk - EMAIL is the ONLY identifier
     const user = await clerkClient(event).users.getUser(userId)
     const userEmail = user.primaryEmailAddress?.emailAddress
 
@@ -27,41 +27,21 @@ export default defineEventHandler(async (event) => {
       return null
     }
 
-    // PRIORITY: Find profile by email (most reliable identifier)
-    const { data: profileByEmail, error: emailError } = await supabase
+    // Find profile by email ONLY
+    const { data: profile, error: emailError } = await supabase
       .from('alumni')
       .select('*')
       .eq('email', userEmail)
       .single()
 
-    if (profileByEmail) {
-      // Update the clerk_user_id if it's different or missing
-      // This handles multiple Clerk accounts with same verified email
-      if (!profileByEmail.clerk_user_id || profileByEmail.clerk_user_id !== userId) {
-        const { data: updatedProfile, error: updateError } = await supabase
-          .from('alumni')
-          .update({
-            clerk_user_id: userId,
-            name: user.fullName || profileByEmail.name,
-            updated_at: new Date().toISOString()
-          })
-          .eq('email', userEmail)
-          .select()
-          .single()
-
-        if (!updateError && updatedProfile) {
-          return updatedProfile
-        }
-      }
-
-      return profileByEmail
+    if (profile) {
+      return profile
     }
 
     if (emailError && emailError.code !== 'PGRST116') {
       throw createError({ statusCode: 500, statusMessage: emailError.message })
     }
     
-    // No profile found
     return null
   } catch (error) {
     console.error('Error in profile lookup:', error)

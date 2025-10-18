@@ -40,15 +40,15 @@ export default defineEventHandler(async (event) => {
       config.supabaseServiceRoleKey
     )
 
-    // First, check if a profile exists for this user
+    // Check if a profile exists for this email
     const { data: existingProfile } = await supabase
       .from('alumni')
       .select('*')
-      .eq('clerk_user_id', userId)
+      .eq('email', userEmail)
       .single()
 
     const payload: any = {
-      clerk_user_id: userId,
+      clerk_user_id: userId, // Store for reference, but email is the primary identifier
       name: body.name,
       phone: body.phone ?? null,
       email: body.email,
@@ -66,11 +66,11 @@ export default defineEventHandler(async (event) => {
       payload.created_at = new Date().toISOString()
     }
 
-    // Use upsert to handle both insert and update
+    // Use upsert with EMAIL as the conflict key (primary identifier)
     const { error } = await supabase
       .from('alumni')
       .upsert(payload, {
-        onConflict: 'clerk_user_id'
+        onConflict: 'email'
       })
 
     if (error) {
