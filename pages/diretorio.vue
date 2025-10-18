@@ -168,6 +168,25 @@
         <p class="text-gray-600">Tente ajustar seus filtros de busca</p>
       </div>
     </div>
+
+    <!-- Back to Top Button -->
+    <Transition
+      enter-active-class="transition ease-out duration-300"
+      enter-from-class="opacity-0 scale-50 translate-y-4"
+      enter-to-class="opacity-100 scale-100 translate-y-0"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="opacity-100 scale-100 translate-y-0"
+      leave-to-class="opacity-0 scale-50 translate-y-4"
+    >
+      <button
+        v-show="showBackToTop"
+        @click="scrollToTop"
+        class="group fixed bottom-8 right-8 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 z-50 ring-4 ring-green-500/20 hover:ring-green-500/40 hover:scale-110"
+        aria-label="Voltar ao topo"
+      >
+        <UIcon name="i-heroicons-arrow-up" class="h-6 w-6 group-hover:-translate-y-0.5 transition-transform duration-200" />
+      </button>
+    </Transition>
   </div>
 </template>
 
@@ -179,6 +198,7 @@ const loading = ref(true)
 const searchQuery = ref('')
 const selectedTechnologies = ref<string[]>([])
 const hasProfile = ref(false)
+const showBackToTop = ref(false)
 
 const popularTechnologies = [
   'JavaScript', 'Python', 'Java', 'TypeScript', 'React', 
@@ -263,8 +283,31 @@ const handleSignOut = async () => {
   navigateTo('/login')
 }
 
+// Back to top functionality
+const handleScroll = () => {
+  showBackToTop.value = window.scrollY > 300
+}
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
 onMounted(() => {
   fetchAlumni()
+  
+  // Add scroll listener for back to top button
+  if (process.client) {
+    window.addEventListener('scroll', handleScroll)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (process.client) {
+    window.removeEventListener('scroll', handleScroll)
+  }
 })
 </script>
 
