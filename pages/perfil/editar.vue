@@ -174,7 +174,6 @@
 import type { AlumniFormData } from '~/types/alumni'
 
 const { userId } = useAuth()
-const supabase = useSupabase()
 const toast = useToast()
 
 const loading = ref(true)
@@ -201,18 +200,7 @@ const fetchProfile = async () => {
     const data = await $fetch('/api/alumni/me')
     
     if (data) {
-      // Client-side security check: ensure user can only edit their own profile
-      if (process.client) {
-        const { user } = useUser()
-        const userEmail = user.value?.primaryEmailAddress?.emailAddress
-        if (data.email && userEmail && data.email !== userEmail) {
-          throw createError({
-            statusCode: 403,
-            statusMessage: 'You can only edit your own profile'
-          })
-        }
-      }
-      
+      // Profile found - auto-fill form with existing data
       isEditing.value = true
       formData.value = {
         name: data.name || '',
@@ -221,30 +209,43 @@ const fetchProfile = async () => {
         linkedin: data.linkedin || '',
         role: data.role || '',
         current_company: data.current_company || '',
-        technologies: data.technologies || [],
-        expertise_fields: data.expertise_fields || []
+        technologies: Array.isArray(data.technologies) ? data.technologies : [],
+        expertise_fields: Array.isArray(data.expertise_fields) ? data.expertise_fields : []
       }
+      
+      console.log('Profile loaded and form auto-filled:', data)
     } else {
+      // No profile found - creating new one
+      isEditing.value = false
+      
       // Pre-populate with Clerk user data for new profiles (client-side only)
       if (process.client) {
-        const { user } = useUser()
-        if (user.value) {
-          formData.value.name = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
-          formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
+        try {
+          const { user } = useUser()
+          if (user?.value) {
+            formData.value.name = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
+            formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
+          }
+        } catch (authError) {
+          console.log('Could not get auth user data:', authError)
         }
       }
     }
   } catch (error) {
     console.error('Error fetching profile:', error)
-    // If no profile found, we're creating a new one
+    // If error occurred, we're creating a new one
     isEditing.value = false
     
     // Pre-populate with Clerk user data for new profiles (client-side only)
     if (process.client) {
-      const { user } = useUser()
-      if (user.value) {
-        formData.value.name = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
-        formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
+      try {
+        const { user } = useUser()
+        if (user?.value) {
+          formData.value.name = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
+          formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
+        }
+      } catch (authError) {
+        console.log('Could not get auth user data:', authError)
       }
     }
   } finally {
