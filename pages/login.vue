@@ -2,7 +2,14 @@
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50 px-4">
     <div class="max-w-md w-full">
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">IME Alumni</h1>
+        <div class="flex items-center justify-center gap-4 mb-2">
+          <h1 class="text-4xl font-bold text-gray-900">IME Alumni</h1>
+          <img 
+            src="/images/ime-logo.png" 
+            alt="IME Logo" 
+            class="w-16 h-16 object-contain"
+          />
+        </div>
         <p class="text-gray-600">Instituto Militar de Engenharia</p>
       </div>
       

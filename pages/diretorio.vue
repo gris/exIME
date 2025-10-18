@@ -3,9 +3,16 @@
     <div class="bg-white shadow">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">Diretório de Ex-Alunos</h1>
-            <p class="text-gray-600">Instituto Militar de Engenharia</p>
+          <div class="flex items-center gap-4">
+            <img 
+              src="/images/ime-logo.png" 
+              alt="IME Logo" 
+              class="w-16 h-16 object-contain"
+            />
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900">Diretório de Ex-Alunos</h1>
+              <p class="text-gray-600">Instituto Militar de Engenharia</p>
+            </div>
           </div>
           <div class="flex gap-3">
             <UButton 

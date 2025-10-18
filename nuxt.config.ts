@@ -30,6 +30,9 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Diretório de Ex-Alunos IME',
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/images/ime-logo.png' }
+      ],
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
