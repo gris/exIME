@@ -42,8 +42,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: error.message })
   }
 
-  console.log('Alumni API returning:', data?.length || 0, 'records')
-  console.log('Sample record:', data?.[0])
   return data || []
 })
 

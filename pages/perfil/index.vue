@@ -140,7 +140,6 @@ const fetchProfile = async () => {
   loading.value = true
   try {
     const data = await $fetch('/api/alumni/me')
-    console.log('Profile data:', data)
     profile.value = data
   } catch (error) {
     console.error('Error fetching profile:', error)

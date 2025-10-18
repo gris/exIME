@@ -292,8 +292,6 @@ const handleSubmit = async () => {
       updated_at: new Date().toISOString()
     }
 
-    console.log('Saving alumni data:', alumniData)
-
     const res = await $fetch('/api/alumni/upsert', {
       method: 'POST',
       body: alumniData
