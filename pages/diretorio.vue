@@ -46,7 +46,7 @@
         <UInput
           v-model="searchQuery"
           size="xl"
-          placeholder="Buscar por nome, empresa ou tecnologia..."
+          placeholder="Buscar por nome, empresa, ano de formatura ou tecnologia..."
           icon="i-heroicons-magnifying-glass"
           :ui="{ icon: { trailing: { pointer: '' } } }"
         />
@@ -218,6 +218,7 @@ const filteredAlumni = computed(() => {
       a.current_company?.toLowerCase().includes(query) ||
       a.role?.toLowerCase().includes(query) ||
       a.email?.toLowerCase().includes(query) ||
+      a.graduation_year?.toString().includes(query) ||
       a.technologies?.some(t => t.toLowerCase().includes(query)) ||
       a.expertise_fields?.some(e => e.toLowerCase().includes(query))
     )
