@@ -30,19 +30,39 @@
       <!-- Profile Display -->
       <UCard v-else>
         <div class="space-y-6">
-          <!-- Header -->
+          <!-- Header with Profile Image -->
           <div class="border-b border-gray-600 pb-6">
-            <h2 class="text-3xl font-bold text-white mb-2">{{ profile.name }}</h2>
-            <div class="flex items-center gap-4 flex-wrap">
-              <p v-if="profile.role" class="text-xl text-green-400 font-medium">{{ profile.role }}</p>
-              <UBadge 
-                v-if="profile.graduation_year" 
-                color="blue" 
-                variant="subtle" 
-                size="lg"
+            <div class="flex items-start gap-6 mb-4">
+              <!-- Profile Image -->
+              <img 
+                v-if="profile.profile_image_url"
+                :src="profile.profile_image_url" 
+                :alt="profile.name"
+                class="w-24 h-24 rounded-full object-cover border-4 border-gray-600"
+                @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
+              />
+              <div 
+                v-else
+                class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-4xl flex-shrink-0"
               >
-                Turma {{ profile.graduation_year }}
-              </UBadge>
+                {{ profile.name.charAt(0).toUpperCase() }}
+              </div>
+
+              <!-- Name and Info -->
+              <div class="flex-1">
+                <h2 class="text-3xl font-bold text-white mb-2">{{ profile.name }}</h2>
+                <div class="flex items-center gap-4 flex-wrap">
+                  <p v-if="profile.role" class="text-xl text-green-400 font-medium">{{ profile.role }}</p>
+                  <UBadge 
+                    v-if="profile.graduation_year" 
+                    color="blue" 
+                    variant="subtle" 
+                    size="lg"
+                  >
+                    Turma {{ profile.graduation_year }}
+                  </UBadge>
+                </div>
+              </div>
             </div>
           </div>
 

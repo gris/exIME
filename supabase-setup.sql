@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS public.alumni (
     role TEXT,
     current_company TEXT,
     graduation_year INTEGER,
+    profile_image_url TEXT,
     technologies TEXT[],
     expertise_fields TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),

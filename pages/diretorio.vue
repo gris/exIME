@@ -79,19 +79,39 @@
           @click="navigateTo(`/perfil/${alumni.id}`)"
         >
           <div class="space-y-3">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-1">
-                <h3 class="text-xl font-semibold text-white">{{ alumni.name }}</h3>
-                <UBadge 
-                  v-if="alumni.graduation_year" 
-                  color="blue" 
-                  variant="subtle" 
-                  size="xs"
+            <div class="flex items-start gap-3">
+              <!-- Profile Image -->
+              <div class="flex-shrink-0">
+                <img 
+                  v-if="alumni.profile_image_url"
+                  :src="alumni.profile_image_url" 
+                  :alt="alumni.name"
+                  class="w-16 h-16 rounded-full object-cover border-2 border-gray-600"
+                  @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
+                />
+                <div 
+                  v-else
+                  class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-xl"
                 >
-                  '{{ alumni.graduation_year.toString().slice(-2) }}
-                </UBadge>
+                  {{ alumni.name.charAt(0).toUpperCase() }}
+                </div>
               </div>
-              <p v-if="alumni.role" class="text-green-400 font-medium">{{ alumni.role }}</p>
+
+              <!-- Profile Info -->
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <h3 class="text-xl font-semibold text-white truncate">{{ alumni.name }}</h3>
+                  <UBadge 
+                    v-if="alumni.graduation_year" 
+                    color="blue" 
+                    variant="subtle" 
+                    size="xs"
+                  >
+                    '{{ alumni.graduation_year.toString().slice(-2) }}
+                  </UBadge>
+                </div>
+                <p v-if="alumni.role" class="text-green-400 font-medium">{{ alumni.role }}</p>
+              </div>
             </div>
             
             <div v-if="alumni.current_company" class="flex items-center gap-2 text-gray-300">

@@ -8,6 +8,7 @@ export interface Alumni {
   role?: string
   current_company?: string
   graduation_year?: number
+  profile_image_url?: string
   technologies?: string[]
   expertise_fields?: string[]
   created_at: string
@@ -22,6 +23,7 @@ export interface AlumniFormData {
   role: string
   current_company: string
   graduation_year: string
+  profile_image_url: string
   technologies: string[]
   expertise_fields: string[]
 }

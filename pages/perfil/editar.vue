@@ -61,6 +61,31 @@
                 size="lg"
               />
             </UFormGroup>
+
+            <UFormGroup label="Foto do Perfil (URL)">
+              <UInput 
+                v-model="formData.profile_image_url" 
+                type="url"
+                placeholder="https://exemplo.com/sua-foto.jpg"
+                size="lg"
+              />
+              <template #help>
+                <p class="text-sm text-gray-500 mt-1">
+                  Cole o link de uma imagem hospedada (ex: LinkedIn, GitHub, Imgur)
+                </p>
+              </template>
+            </UFormGroup>
+
+            <!-- Image Preview -->
+            <div v-if="formData.profile_image_url" class="mt-2">
+              <p class="text-sm text-gray-600 mb-2">Preview:</p>
+              <img 
+                :src="formData.profile_image_url" 
+                alt="Preview da foto"
+                class="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
+                @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
+              />
+            </div>
           </div>
 
           <!-- Professional Information -->
@@ -201,6 +226,7 @@ const formData = ref<AlumniFormData>({
   role: '',
   current_company: '',
   graduation_year: '',
+  profile_image_url: '',
   technologies: [],
   expertise_fields: []
 })
@@ -222,6 +248,7 @@ const fetchProfile = async () => {
         role: data.role || '',
         current_company: data.current_company || '',
         graduation_year: data.graduation_year ? data.graduation_year.toString() : '',
+        profile_image_url: data.profile_image_url || '',
         technologies: Array.isArray(data.technologies) ? data.technologies : [],
         expertise_fields: Array.isArray(data.expertise_fields) ? data.expertise_fields : []
       }
@@ -300,6 +327,7 @@ const handleSubmit = async () => {
       role: formData.value.role || null,
       current_company: formData.value.current_company || null,
       graduation_year: formData.value.graduation_year ? parseInt(formData.value.graduation_year) : null,
+      profile_image_url: formData.value.profile_image_url || null,
       technologies: formData.value.technologies.length > 0 ? formData.value.technologies : null,
       expertise_fields: formData.value.expertise_fields.length > 0 ? formData.value.expertise_fields : null,
       updated_at: new Date().toISOString()

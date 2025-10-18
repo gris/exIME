@@ -56,6 +56,7 @@ export default defineEventHandler(async (event) => {
       role: body.role ?? null,
       current_company: body.current_company ?? null,
       graduation_year: body.graduation_year ?? null,
+      profile_image_url: body.profile_image_url ?? null,
       technologies: body.technologies?.length ? body.technologies : null,
       expertise_fields: body.expertise_fields?.length ? body.expertise_fields : null,
       updated_at: new Date().toISOString(),
