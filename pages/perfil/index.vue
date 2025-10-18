@@ -38,7 +38,17 @@
           <!-- Header -->
           <div class="border-b border-gray-600 pb-6">
             <h2 class="text-3xl font-bold text-white mb-2">{{ profile.name }}</h2>
-            <p v-if="profile.role" class="text-xl text-green-400 font-medium">{{ profile.role }}</p>
+            <div class="flex items-center gap-4 flex-wrap">
+              <p v-if="profile.role" class="text-xl text-green-400 font-medium">{{ profile.role }}</p>
+              <UBadge 
+                v-if="profile.graduation_year" 
+                color="blue" 
+                variant="subtle" 
+                size="lg"
+              >
+                Turma {{ profile.graduation_year }}
+              </UBadge>
+            </div>
           </div>
 
           <!-- Contact Information -->

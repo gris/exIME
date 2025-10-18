@@ -19,75 +19,48 @@ export default defineEventHandler(async (event) => {
   )
 
   try {
-    // Step 1: Try to find profile by clerk_user_id
-    const { data: profileByUserId, error: userIdError } = await supabase
+    // Get user email from Clerk - this is our primary identifier
+    const user = await clerkClient(event).users.getUser(userId)
+    const userEmail = user.primaryEmailAddress?.emailAddress
+
+    if (!userEmail) {
+      return null
+    }
+
+    // PRIORITY: Find profile by email (most reliable identifier)
+    const { data: profileByEmail, error: emailError } = await supabase
       .from('alumni')
       .select('*')
-      .eq('clerk_user_id', userId)
+      .eq('email', userEmail)
       .single()
 
-    if (profileByUserId) {
-      return profileByUserId
-    }
+    if (profileByEmail) {
+      // Update the clerk_user_id if it's different or missing
+      // This handles multiple Clerk accounts with same verified email
+      if (!profileByEmail.clerk_user_id || profileByEmail.clerk_user_id !== userId) {
+        const { data: updatedProfile, error: updateError } = await supabase
+          .from('alumni')
+          .update({
+            clerk_user_id: userId,
+            name: user.fullName || profileByEmail.name,
+            updated_at: new Date().toISOString()
+          })
+          .eq('email', userEmail)
+          .select()
+          .single()
 
-    // Step 2: If not found by clerk_user_id, get user email from Clerk and try to find by email
-    if (userIdError?.code === 'PGRST116') { // Profile not found by clerk_user_id
-      try {
-        const user = await clerkClient(event).users.getUser(userId)
-        const userEmail = user.primaryEmailAddress?.emailAddress
-
-        if (userEmail) {
-          // Try to find profile by email
-          const { data: profileByEmail, error: emailError } = await supabase
-            .from('alumni')
-            .select('*')
-            .eq('email', userEmail)
-            .single()
-
-          if (profileByEmail) {
-            // Found profile by email - check if it's already claimed
-            if (profileByEmail.clerk_user_id && profileByEmail.clerk_user_id !== userId) {
-              throw createError({ 
-                statusCode: 409, 
-                statusMessage: 'This email is already associated with another account' 
-              })
-            }
-
-            // Automatically claim this profile by updating clerk_user_id
-            if (!profileByEmail.clerk_user_id) {
-              const { data: claimedProfile, error: claimError } = await supabase
-                .from('alumni')
-                .update({
-                  clerk_user_id: userId,
-                  name: user.fullName || profileByEmail.name,
-                  updated_at: new Date().toISOString()
-                })
-                .eq('email', userEmail)
-                .select()
-                .single()
-
-              if (!claimError && claimedProfile) {
-                return claimedProfile
-              }
-            }
-
-            return profileByEmail
-          }
-
-          if (emailError && emailError.code !== 'PGRST116') {
-            throw createError({ statusCode: 500, statusMessage: emailError.message })
-          }
+        if (!updateError && updatedProfile) {
+          return updatedProfile
         }
-      } catch (clerkError) {
-        console.error('Failed to fetch user from Clerk:', clerkError)
-        // Continue without email lookup if Clerk fails
       }
+
+      return profileByEmail
     }
 
-    if (userIdError && userIdError.code !== 'PGRST116') {
-      throw createError({ statusCode: 500, statusMessage: userIdError.message })
+    if (emailError && emailError.code !== 'PGRST116') {
+      throw createError({ statusCode: 500, statusMessage: emailError.message })
     }
-
+    
     // No profile found
     return null
   } catch (error) {

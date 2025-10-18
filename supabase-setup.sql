@@ -4,13 +4,14 @@
 -- Create the alumni table
 CREATE TABLE IF NOT EXISTS public.alumni (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    clerk_user_id TEXT UNIQUE NOT NULL,
+    clerk_user_id TEXT UNIQUE,
     name TEXT NOT NULL,
     phone TEXT,
-    email TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
     linkedin TEXT,
     role TEXT,
     current_company TEXT,
+    graduation_year INTEGER,
     technologies TEXT[],
     expertise_fields TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS public.alumni (
 CREATE INDEX IF NOT EXISTS idx_alumni_clerk_user_id ON public.alumni(clerk_user_id);
 CREATE INDEX IF NOT EXISTS idx_alumni_name ON public.alumni(name);
 CREATE INDEX IF NOT EXISTS idx_alumni_email ON public.alumni(email);
+CREATE INDEX IF NOT EXISTS idx_alumni_graduation_year ON public.alumni(graduation_year);
 CREATE INDEX IF NOT EXISTS idx_alumni_technologies ON public.alumni USING GIN(technologies);
 CREATE INDEX IF NOT EXISTS idx_alumni_expertise_fields ON public.alumni USING GIN(expertise_fields);
 

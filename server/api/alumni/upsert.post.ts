@@ -1,60 +1,103 @@
 import { createClient } from '@supabase/supabase-js'
-import { getAuth } from '@clerk/nuxt/server'
+import { getAuth, clerkClient } from '@clerk/nuxt/server'
 
 export default defineEventHandler(async (event) => {
-  const { isAuthenticated, userId, user } = getAuth(event)
-  if (!isAuthenticated) {
+  const { isAuthenticated, userId } = getAuth(event)
+  if (!isAuthenticated || !userId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
   const body = await readBody(event)
   
-  // Security check: ensure user can only edit their own profile
-  const userEmail = user?.primaryEmailAddress?.emailAddress
-  if (!userEmail || body.email !== userEmail) {
+  try {
+    // Get user details from Clerk for security check
+    const user = await clerkClient(event).users.getUser(userId)
+    const userEmail = user.primaryEmailAddress?.emailAddress
+    
+    if (!userEmail) {
+      throw createError({ 
+        statusCode: 400, 
+        statusMessage: 'User email not found' 
+      })
+    }
+
+    // Security check: ensure user can only edit their own profile
+    if (body.email !== userEmail) {
+      throw createError({ 
+        statusCode: 403, 
+        statusMessage: 'Forbidden: You can only edit your own profile' 
+      })
+    }
+
+    const config = useRuntimeConfig()
+
+    if (!config.public.supabaseUrl || !config.supabaseServiceRoleKey) {
+      throw createError({ statusCode: 500, statusMessage: 'Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY' })
+    }
+
+    const supabase = createClient(
+      config.public.supabaseUrl,
+      config.supabaseServiceRoleKey
+    )
+
+    // First, check if a profile exists for this user
+    const { data: existingProfile } = await supabase
+      .from('alumni')
+      .select('*')
+      .eq('clerk_user_id', userId)
+      .single()
+
+    const payload: any = {
+      clerk_user_id: userId,
+      name: body.name,
+      phone: body.phone ?? null,
+      email: body.email,
+      linkedin: body.linkedin ?? null,
+      role: body.role ?? null,
+      current_company: body.current_company ?? null,
+      graduation_year: body.graduation_year ?? null,
+      technologies: body.technologies?.length ? body.technologies : null,
+      expertise_fields: body.expertise_fields?.length ? body.expertise_fields : null,
+      updated_at: new Date().toISOString(),
+    }
+
+    // Only set created_at for new profiles
+    if (!existingProfile) {
+      payload.created_at = new Date().toISOString()
+    }
+
+    // Use upsert to handle both insert and update
+    const { error } = await supabase
+      .from('alumni')
+      .upsert(payload, {
+        onConflict: 'clerk_user_id'
+      })
+
+    if (error) {
+      console.error('Upsert error:', error)
+      throw createError({ statusCode: 500, statusMessage: error.message })
+    }
+
+    return { ok: true }
+  } catch (error) {
+    console.error('Error in upsert:', error)
+    // Check if it's a Clerk-related error
+    if ((error as any)?.message && (error as any).message.includes('User not found')) {
+      throw createError({ 
+        statusCode: 500, 
+        statusMessage: 'Failed to fetch user details' 
+      })
+    }
+    // Re-throw createError objects as-is
+    if ((error as any)?.statusCode) {
+      throw error
+    }
+    // Generic error handling
     throw createError({ 
-      statusCode: 403, 
-      statusMessage: 'Forbidden: You can only edit your own profile' 
+      statusCode: 500, 
+      statusMessage: 'Failed to save profile' 
     })
   }
-  const config = useRuntimeConfig()
-
-  if (!config.public.supabaseUrl || !config.supabaseServiceRoleKey) {
-    throw createError({ statusCode: 500, statusMessage: 'Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY' })
-  }
-
-  const supabase = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceRoleKey
-  )
-
-  const payload = {
-    clerk_user_id: userId,
-    name: body.name,
-    phone: body.phone ?? null,
-    email: body.email,
-    linkedin: body.linkedin ?? null,
-    role: body.role ?? null,
-    current_company: body.current_company ?? null,
-    technologies: body.technologies?.length ? body.technologies : null,
-    expertise_fields: body.expertise_fields?.length ? body.expertise_fields : null,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  }
-
-  // Use upsert to handle both insert and update
-  const { error } = await supabase
-    .from('alumni')
-    .upsert(payload, {
-      onConflict: 'clerk_user_id'
-    })
-
-  if (error) {
-    console.error('Upsert error:', error)
-    throw createError({ statusCode: 500, statusMessage: error.message })
-  }
-
-  return { ok: true }
 })
 
 

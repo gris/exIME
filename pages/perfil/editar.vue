@@ -67,6 +67,17 @@
           <div class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold text-gray-900">Informações Profissionais</h3>
             
+            <UFormGroup label="Ano de Formatura IME">
+              <UInput 
+                v-model="formData.graduation_year" 
+                type="number"
+                placeholder="Ex: 2017"
+                size="lg"
+                min="1950"
+                :max="new Date().getFullYear() + 5"
+              />
+            </UFormGroup>
+
             <UFormGroup label="Cargo Atual">
               <UInput 
                 v-model="formData.role" 
@@ -189,6 +200,7 @@ const formData = ref<AlumniFormData>({
   linkedin: '',
   role: '',
   current_company: '',
+  graduation_year: '',
   technologies: [],
   expertise_fields: []
 })
@@ -209,11 +221,10 @@ const fetchProfile = async () => {
         linkedin: data.linkedin || '',
         role: data.role || '',
         current_company: data.current_company || '',
+        graduation_year: data.graduation_year ? data.graduation_year.toString() : '',
         technologies: Array.isArray(data.technologies) ? data.technologies : [],
         expertise_fields: Array.isArray(data.expertise_fields) ? data.expertise_fields : []
       }
-      
-      console.log('Profile loaded and form auto-filled:', data)
     } else {
       // No profile found - creating new one
       isEditing.value = false
@@ -288,6 +299,7 @@ const handleSubmit = async () => {
       linkedin: formData.value.linkedin || null,
       role: formData.value.role || null,
       current_company: formData.value.current_company || null,
+      graduation_year: formData.value.graduation_year ? parseInt(formData.value.graduation_year) : null,
       technologies: formData.value.technologies.length > 0 ? formData.value.technologies : null,
       expertise_fields: formData.value.expertise_fields.length > 0 ? formData.value.expertise_fields : null,
       updated_at: new Date().toISOString()

@@ -80,7 +80,17 @@
         >
           <div class="space-y-3">
             <div>
-              <h3 class="text-xl font-semibold text-white">{{ alumni.name }}</h3>
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <h3 class="text-xl font-semibold text-white">{{ alumni.name }}</h3>
+                <UBadge 
+                  v-if="alumni.graduation_year" 
+                  color="blue" 
+                  variant="subtle" 
+                  size="xs"
+                >
+                  '{{ alumni.graduation_year.toString().slice(-2) }}
+                </UBadge>
+              </div>
               <p v-if="alumni.role" class="text-green-400 font-medium">{{ alumni.role }}</p>
             </div>
             
