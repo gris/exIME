@@ -131,10 +131,17 @@
               <span class="truncate">{{ alumni.email }}</span>
             </div>
 
-            <div v-if="alumni.linkedin" class="flex items-center gap-2 text-blue-400">
+            <a 
+              v-if="alumni.linkedin" 
+              :href="getLinkedInUrl(alumni.linkedin)"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+              @click.stop
+            >
               <UIcon name="i-heroicons-link" class="h-5 w-5" />
               <span class="truncate">LinkedIn</span>
-            </div>
+            </a>
 
             <div v-if="alumni.technologies && alumni.technologies.length > 0" class="pt-2">
               <div class="flex flex-wrap gap-1">
@@ -205,12 +212,22 @@ const popularTechnologies = [
   'Vue', 'Node.js', 'AWS', 'Docker', 'Kubernetes'
 ]
 
+// Shuffle array helper
+const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 // Fetch alumni data
 const fetchAlumni = async () => {
   loading.value = true
   try {
     const data = await $fetch('/api/alumni')
-    alumni.value = (data as Alumni[]) || []
+    alumni.value = shuffleArray((data as Alumni[]) || [])
 
     // Check if user has a profile by email (using /api/alumni/me)
     try {
@@ -269,6 +286,16 @@ const toggleTechnology = (tech: string) => {
     selectedTechnologies.value.splice(index, 1)
   } else {
     selectedTechnologies.value.push(tech)
+  }
+}
+
+const getLinkedInUrl = (linkedin?: string) => {
+  if (!linkedin || typeof linkedin !== 'string') return '#'
+  try {
+    return linkedin.startsWith('http') ? linkedin : `https://linkedin.com/in/${linkedin}`
+  } catch (e) {
+    console.error('Error formatting LinkedIn URL:', e)
+    return '#'
   }
 }
 
