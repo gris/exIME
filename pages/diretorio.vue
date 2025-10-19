@@ -80,6 +80,12 @@
 
       <!-- Alumni Grid -->
       <div v-else-if="filteredAlumni.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+        <!-- Counter -->
+        <div class="flex justify-center py-12">
+            {{ filteredAlumni }} pessoas encontradas
+        </div>
+          
         <UCard 
           v-for="alumni in filteredAlumni" 
           :key="alumni.id"
