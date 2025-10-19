@@ -24,7 +24,7 @@
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <!-- Basic Information -->
           <div class="space-y-4">
-            <h3 class="text-lg font-semibold text-gray-900">Informações Básicas</h3>
+            <h3 class="text-lg font-semibold">Informações Básicas</h3>
             
             <UFormGroup label="Nome Completo *" required>
               <UInput 
@@ -90,7 +90,7 @@
 
           <!-- Professional Information -->
           <div class="space-y-4 pt-6 border-t">
-            <h3 class="text-lg font-semibold text-gray-900">Informações Profissionais</h3>
+            <h3 class="text-lg font-semibold">Informações Profissionais</h3>
             
             <UFormGroup label="Ano de Formatura IME">
               <UInput 
@@ -122,8 +122,8 @@
 
           <!-- Technologies -->
           <div class="space-y-4 pt-6 border-t">
-            <h3 class="text-lg font-semibold text-gray-900">Tecnologias</h3>
-            <p class="text-sm text-gray-600">Digite e pressione Enter para adicionar tecnologias</p>
+            <h3 class="text-lg font-semibold">Tecnologias</h3>
+            <p class="text-sm text-gray-500">Digite e pressione Enter para adicionar tecnologias</p>
             
             <div class="space-y-3">
               <UInput 
@@ -152,8 +152,8 @@
 
           <!-- Expertise Fields -->
           <div class="space-y-4 pt-6 border-t">
-            <h3 class="text-lg font-semibold text-gray-900">Áreas de Atuação</h3>
-            <p class="text-sm text-gray-600">Digite e pressione Enter para adicionar campos como "fresh food, ecommerce, crypto"</p>
+            <h3 class="text-lg font-semibold">Áreas de Atuação</h3>
+            <p class="text-sm text-gray-500">Digite e pressione Enter para adicionar campos como "fresh food, ecommerce, crypto"</p>
             
             <div class="space-y-3">
               <UInput 

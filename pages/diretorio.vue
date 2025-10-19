@@ -1,44 +1,45 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <div class="bg-white shadow">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div class="flex justify-between items-center">
-          <div class="flex items-center gap-4">
-            <img 
-              src="/images/ime-logo.png" 
-              alt="IME Logo" 
+          <div class="flex items-center gap-3">
+            <img
+              src="/images/ime-logo.png"
+              alt="IME Logo"
               class="w-16 h-16 object-contain"
             />
             <div>
-              <h1 class="text-3xl font-bold text-gray-900">Diretório de Alunos e Ex-Alunos</h1>
-              <p class="text-gray-600">Instituto Militar de Engenharia</p>
+              <h1 class="text-xl font-bold text-gray-900">IME</h1>
+              <p class="text-xs text-gray-600">Instituto Militar de Engenharia</p>
             </div>
           </div>
-          <div class="flex gap-3">
-            <UButton 
-              v-if="!hasProfile" 
-              to="/perfil/editar" 
-              color="green" 
-              size="lg"
+          <div class="flex gap-2">
+            <UButton
+              v-if="!hasProfile"
+              to="/perfil/editar"
+              color="green"
+              size="sm"
               icon="i-heroicons-plus"
             >
-              Criar Perfil
+              <span class="hidden sm:inline">Criar Perfil</span>
             </UButton>
-            <UButton 
-              v-else 
-              to="/perfil" 
-              variant="outline" 
-              size="lg"
+            <UButton
+              v-else
+              to="/perfil"
+              variant="outline"
+              size="sm"
               icon="i-heroicons-user"
             >
-              Meu Perfil
+              <span class="hidden sm:inline">Meu Perfil</span>
             </UButton>
-            <UButton 
-              @click="handleSignOut" 
-              color="gray" 
-              variant="outline" 
-              size="lg"
+            <UButton
+              @click="handleSignOut"
+              color="gray"
+              variant="outline"
+              size="sm"
               icon="i-heroicons-arrow-right-on-rectangle"
+              class="hidden sm:flex"
             >
               Sair
             </UButton>
@@ -82,52 +83,50 @@
         <UCard 
           v-for="alumni in filteredAlumni" 
           :key="alumni.id"
-          class="hover:shadow-lg transition-shadow cursor-pointer"
+          class="hover:shadow-xl transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
           @click="navigateTo(`/perfil/${alumni.id}`)"
         >
-          <div class="space-y-3">
-            <div class="flex items-start gap-3">
-              <!-- Profile Image -->
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
               <div class="flex-shrink-0">
                 <img 
                   v-if="alumni.profile_image_url"
                   :src="alumni.profile_image_url" 
                   :alt="alumni.name"
-                  class="w-16 h-16 rounded-full object-cover border-2 border-gray-600"
+                  class="w-14 h-14 rounded-full object-cover"
                   @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
                 />
                 <div 
                   v-else
-                  class="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-xl"
+                  class="w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg"
                 >
                   {{ alumni.name.charAt(0).toUpperCase() }}
                 </div>
               </div>
 
-              <!-- Profile Info -->
               <div class="flex-1 min-w-0">
-                <div class="flex items-center justify-between gap-2 mb-1">
-                  <h3 class="text-xl font-semibold text-white truncate">{{ alumni.name }}</h3>
+                <div class="flex items-start justify-between gap-2 mb-1">
+                  <h3 class="font-semibold truncate">{{ alumni.name }}</h3>
                   <UBadge 
                     v-if="alumni.graduation_year" 
-                    color="blue" 
+                    color="primary" 
                     variant="subtle" 
                     size="xs"
                   >
                     '{{ alumni.graduation_year.toString().slice(-2) }}
                   </UBadge>
                 </div>
-                <p v-if="alumni.role" class="text-green-400 font-medium">{{ alumni.role }}</p>
+                <p v-if="alumni.role" class="text-sm text-primary-600">{{ alumni.role }}</p>
               </div>
             </div>
             
-            <div v-if="alumni.current_company" class="flex items-center gap-2 text-gray-300">
-              <UIcon name="i-heroicons-building-office" class="h-5 w-5" />
-              <span>{{ alumni.current_company }}</span>
+            <div v-if="alumni.current_company" class="flex items-center gap-2 text-sm">
+              <UIcon name="i-heroicons-building-office" class="h-4 w-4 flex-shrink-0" />
+              <span class="truncate">{{ alumni.current_company }}</span>
             </div>
 
-            <div v-if="alumni.email" class="flex items-center gap-2 text-gray-300">
-              <UIcon name="i-heroicons-envelope" class="h-5 w-5" />
+            <div v-if="alumni.email" class="flex items-center gap-2 text-sm">
+              <UIcon name="i-heroicons-envelope" class="h-4 w-4 flex-shrink-0" />
               <span class="truncate">{{ alumni.email }}</span>
             </div>
 
@@ -136,19 +135,19 @@
               :href="getLinkedInUrl(alumni.linkedin)"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+              class="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600 font-medium"
               @click.stop
             >
-              <UIcon name="i-heroicons-link" class="h-5 w-5" />
+              <UIcon name="i-heroicons-link" class="h-4 w-4 flex-shrink-0" />
               <span class="truncate">LinkedIn</span>
             </a>
 
-            <div v-if="alumni.technologies && alumni.technologies.length > 0" class="pt-2">
-              <div class="flex flex-wrap gap-1">
+            <div v-if="alumni.technologies && alumni.technologies.length > 0" class="pt-3 border-t">
+              <div class="flex flex-wrap gap-1.5">
                 <UBadge 
                   v-for="tech in alumni.technologies.slice(0, 5)" 
                   :key="tech"
-                  color="green"
+                  color="primary"
                   variant="subtle"
                   size="xs"
                 >
@@ -156,7 +155,6 @@
                 </UBadge>
                 <UBadge 
                   v-if="alumni.technologies.length > 5"
-                  color="gray"
                   variant="subtle"
                   size="xs"
                 >
@@ -178,20 +176,20 @@
 
     <!-- Back to Top Button -->
     <Transition
-      enter-active-class="transition ease-out duration-300"
-      enter-from-class="opacity-0 scale-50 translate-y-4"
-      enter-to-class="opacity-100 scale-100 translate-y-0"
-      leave-active-class="transition ease-in duration-200"
-      leave-from-class="opacity-100 scale-100 translate-y-0"
-      leave-to-class="opacity-0 scale-50 translate-y-4"
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0 translate-y-1"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 translate-y-1"
     >
       <button
         v-show="showBackToTop"
         @click="scrollToTop"
-        class="group fixed bottom-8 right-8 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 z-50 ring-4 ring-green-500/20 hover:ring-green-500/40 hover:scale-110"
+        class="fixed bottom-8 right-8 bg-gray-900 hover:bg-gray-800 text-white rounded-full p-3 shadow-lg transition-colors z-50"
         aria-label="Voltar ao topo"
       >
-        <UIcon name="i-heroicons-arrow-up" class="h-6 w-6 group-hover:-translate-y-0.5 transition-transform duration-200" />
+        <UIcon name="i-heroicons-arrow-up" class="h-5 w-5" />
       </button>
     </Transition>
   </div>

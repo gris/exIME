@@ -68,5 +68,10 @@ export default defineNuxtConfig({
     publishableKey: process.env.NUXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     signInUrl: '/login',
     skipServerMiddleware: false
+  },
+
+  routeRules: {
+    '/perfil/**': { ssr: false },
+    '/login': { ssr: false }
   }
 })
