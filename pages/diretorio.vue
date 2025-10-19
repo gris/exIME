@@ -73,6 +73,11 @@
         </div>
       </div>
 
+      <!-- Counter -->
+      <div class="flex justify-center py-12">
+          {{ filteredAlumni.length }} pessoas encontradas
+      </div>
+      
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center py-12">
         <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-green-600" />
