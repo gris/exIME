@@ -83,7 +83,7 @@
           
         <!-- Counter -->
         <div class="flex justify-center py-12">
-            {{ filteredAlumni }} pessoas encontradas
+            {{ filteredAlumni.length }} pessoas encontradas
         </div>
           
         <UCard 
