@@ -240,6 +240,12 @@ supabase db reset
 
 ---
 
+## Contributing
+
+**This project is exclusively for IME alumni.** Contributions are only welcomed from verified IME alumni. If you are an IME alumnus and would like to contribute, please reach out to the project maintainers.
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
