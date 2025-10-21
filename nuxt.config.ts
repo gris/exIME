@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { ptBR } from '@clerk/localizations'
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
@@ -76,7 +78,8 @@ export default defineNuxtConfig({
       variables: {
         colorPrimary: '#16a34a'
       }
-    }
+    },
+    localization: ptBR,
   },
 
   routeRules: {
