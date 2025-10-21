@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   },
   "dependencies": {
     "@clerk/nuxt": "^1.0.0",
@@ -19,7 +21,11 @@
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "typescript": "^5.6.3"
+    "@nuxt/test-utils": "^3.19.2",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.6.3",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=20.11.0 || >=22.0.0"
@@ -28,4 +34,3 @@
     "tsconfck": "^3.1.5"
   }
 }
-
