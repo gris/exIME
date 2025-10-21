@@ -34,7 +34,15 @@
               <span class="hidden sm:inline">Meu Perfil</span>
             </UButton>
             <div class="flex items-center">
-              <UserButton />
+              <UserButton 
+                :user-profile-props="{
+                  appearance: {
+                    elements: {
+                      profileSection__emailAddresses: 'hidden'
+                    }
+                  }
+                }"
+              />
             </div>
           </div>
         </div>

@@ -11,7 +11,15 @@
             <UButton to="/perfil/editar" color="green" icon="i-heroicons-pencil">
               Editar
             </UButton>
-            <UserButton />
+            <UserButton 
+              :user-profile-props="{
+                appearance: {
+                  elements: {
+                    profileSection__emailAddresses: 'hidden'
+                  }
+                }
+              }"
+            />
           </div>
         </div>
       </div>

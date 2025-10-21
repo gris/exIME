@@ -7,6 +7,10 @@ export default defineNuxtConfig({
     host: 'localhost'
   },
   
+  experimental: {
+    appManifest: false
+  },
+  
   build: {
     transpile: ['@clerk/nuxt']
   },
@@ -67,11 +71,16 @@ export default defineNuxtConfig({
   clerk: {
     publishableKey: process.env.NUXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     signInUrl: '/login',
-    skipServerMiddleware: false
+    skipServerMiddleware: false,
+    appearance: {
+      variables: {
+        colorPrimary: '#16a34a'
+      }
+    }
   },
 
   routeRules: {
     '/perfil/**': { ssr: false },
-    '/login': { ssr: false }
+    '/login': { ssr: false },
   }
 })
