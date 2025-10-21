@@ -29,7 +29,9 @@ export interface AlumniFormData {
 }
 
 
-export const validateLinkedinUrl = (url: string): boolean => {
+export const validateLinkedinUrl = (url: string | null): boolean => {
+  if (!url) return true;
+
   const linkedInRegex =
     /^(https?:\/\/www\.)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-_]{3,100}\/?$/;
 
