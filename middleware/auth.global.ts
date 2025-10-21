@@ -1,5 +1,3 @@
-import { getAuth } from '@clerk/nuxt/server'
-
 export default defineNuxtRouteMiddleware((to) => {
   const publicRoutes = ['/login']
 
@@ -7,7 +5,9 @@ export default defineNuxtRouteMiddleware((to) => {
   if (import.meta.server) {
     const event = useRequestEvent()
     if (!event) return
-    const { isAuthenticated } = getAuth(event)
+    
+    const auth = event.context.auth()
+    const isAuthenticated = !!auth?.userId
 
     if (!isAuthenticated && !publicRoutes.includes(to.path)) {
       return navigateTo('/login')

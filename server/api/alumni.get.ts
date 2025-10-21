@@ -1,9 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
-import { getAuth } from '@clerk/nuxt/server'
 
 export default defineEventHandler(async (event) => {
-  const { isAuthenticated } = getAuth(event)
-  if (!isAuthenticated) {
+  const auth = event.context.auth()
+  
+  if (!auth?.userId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   let { data, error } = await supabase
     .from('alumni')
     .select('*')
-    .order('name', { nullsLast: true })
+    .order('name', { ascending: true, nullsFirst: false })
 
   // If ordering by name fails, try without ordering
   if (error) {

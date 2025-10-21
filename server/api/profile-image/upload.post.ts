@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
-import { getAuth, clerkClient } from '@clerk/nuxt/server'
+import { clerkClient } from '@clerk/nuxt/server'
 
 export default defineEventHandler(async (event) => {
-  const { isAuthenticated, userId } = getAuth(event)
+  const auth = event.context.auth()
+  const userId = auth?.userId
   
-  if (!isAuthenticated || !userId) {
+  if (!userId) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
