@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (body.linkedin && !validateLinkedinUrl(body.linkedin)) {
+    if (!validateLinkedinUrl(body.linkedin)) {
       throw createError({ 
         statusCode: 400, 
         statusMessage: 'Invalid LinkedIn URL' 
