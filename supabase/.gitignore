@@ -1,0 +1,9 @@
+# Supabase local development
+.branches
+.temp
+.env
+
+# Editor backup files
+*.swp
+*.swo
+*~
