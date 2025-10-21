@@ -62,29 +62,80 @@
               />
             </UFormGroup>
 
-            <UFormGroup label="Foto do Perfil (URL)">
-              <UInput 
-                v-model="formData.profile_image_url" 
-                type="url"
-                placeholder="https://exemplo.com/sua-foto.jpg"
-                size="lg"
-              />
-              <template #help>
-                <p class="text-sm text-gray-500 mt-1">
-                  Cole o link de uma imagem hospedada (ex: LinkedIn, GitHub, Imgur)
-                </p>
-              </template>
-            </UFormGroup>
+            <!-- Profile Picture Upload -->
+            <div class="space-y-3">
+              <label class="text-sm font-medium text-gray-700">Foto do Perfil</label>
+              <div class="flex items-start gap-4">
+                <!-- Profile Image Preview -->
+                <div class="relative">
+                  <img 
+                    v-if="profileImageUrl"
+                    :src="profileImageUrl" 
+                    alt="Foto do perfil"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+                  />
+                  <div 
+                    v-else
+                    class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-3xl"
+                  >
+                    {{ formData.name ? formData.name.charAt(0).toUpperCase() : '?' }}
+                  </div>
+                  <!-- Upload indicator -->
+                  <div 
+                    v-if="uploadingImage"
+                    class="absolute inset-0 rounded-full bg-black bg-opacity-50 flex items-center justify-center"
+                  >
+                    <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-white" />
+                  </div>
+                </div>
 
-            <!-- Image Preview -->
-            <div v-if="formData.profile_image_url" class="mt-2">
-              <p class="text-sm text-gray-600 mb-2">Preview:</p>
-              <img 
-                :src="formData.profile_image_url" 
-                alt="Preview da foto"
-                class="w-32 h-32 rounded-full object-cover border-2 border-gray-200"
-                @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
-              />
+                <!-- Upload Controls -->
+                <div class="flex-1 space-y-3">
+                  <p class="text-sm text-gray-600">
+                    Faça upload de uma foto de perfil (JPEG, PNG, GIF ou WebP, máx. 10MB)
+                  </p>
+                  
+                  <div class="flex items-center gap-2">
+                    <input
+                      ref="fileInput"
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      class="hidden"
+                      @change="handleFileSelect"
+                    />
+                    <UButton
+                      type="button"
+                      color="primary"
+                      variant="outline"
+                      icon="i-heroicons-photo"
+                      @click="triggerFileInput"
+                      :disabled="uploadingImage"
+                    >
+                      Escolher Foto
+                    </UButton>
+                    <UButton
+                      v-if="selectedFile"
+                      type="button"
+                      color="green"
+                      icon="i-heroicons-arrow-up-tray"
+                      @click="uploadProfileImage"
+                      :loading="uploadingImage"
+                      :disabled="uploadingImage"
+                    >
+                      Upload
+                    </UButton>
+                  </div>
+
+                  <div v-if="selectedFile" class="space-y-1">
+                    <p class="text-xs text-gray-500">
+                      Arquivo selecionado: {{ selectedFile.name }}
+                    </p>
+                    <p class="text-xs text-green-600 font-medium">
+                      ✓ Preview exibido - clique em "Upload" para salvar
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -218,6 +269,32 @@ const isEditing = ref(false)
 const newTechnology = ref('')
 const newExpertise = ref('')
 
+// Profile image upload
+const fileInput = ref<HTMLInputElement | null>(null)
+const selectedFile = ref<File | null>(null)
+const uploadingImage = ref(false)
+const uploadedImageUrl = ref<string | null>(null)
+const previewImageUrl = ref<string | null>(null)
+
+// Get Clerk profile image
+const profileImageUrl = computed(() => {
+  // Show preview of selected file first (before upload)
+  if (previewImageUrl.value) {
+    return previewImageUrl.value
+  }
+  
+  // Show uploaded image if available
+  if (uploadedImageUrl.value) {
+    return uploadedImageUrl.value
+  }
+  
+  if (process.client) {
+    const { user: clerkUser } = useUser()
+    return clerkUser?.value?.imageUrl || null
+  }
+  return null
+})
+
 const formData = ref<AlumniFormData>({
   name: '',
   phone: '',
@@ -315,6 +392,102 @@ const removeExpertise = (index: number) => {
   formData.value.expertise_fields.splice(index, 1)
 }
 
+// Profile image upload handlers
+const triggerFileInput = () => {
+  fileInput.value?.click()
+}
+
+const handleFileSelect = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  
+  if (file) {
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      toast.add({
+        title: 'Tipo de arquivo inválido',
+        description: 'Por favor, escolha uma imagem JPEG, PNG, GIF ou WebP',
+        color: 'red'
+      })
+      return
+    }
+    
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      toast.add({
+        title: 'Arquivo muito grande',
+        description: 'O tamanho máximo é 10MB',
+        color: 'red'
+      })
+      return
+    }
+    
+    selectedFile.value = file
+    
+    // Create preview URL
+    if (previewImageUrl.value) {
+      URL.revokeObjectURL(previewImageUrl.value)
+    }
+    previewImageUrl.value = URL.createObjectURL(file)
+  }
+}
+
+const uploadProfileImage = async () => {
+  if (!selectedFile.value) return
+  
+  uploadingImage.value = true
+  
+  try {
+    const formData = new FormData()
+    formData.append('file', selectedFile.value)
+    
+    const response = await $fetch<{ success: boolean; imageUrl: string }>('/api/profile-image/upload', {
+      method: 'POST',
+      body: formData
+    })
+    
+    if (response.success) {
+      uploadedImageUrl.value = response.imageUrl
+      
+      toast.add({
+        title: 'Sucesso!',
+        description: 'Foto de perfil atualizada',
+        color: 'green'
+      })
+      
+      // Clean up preview URL
+      if (previewImageUrl.value) {
+        URL.revokeObjectURL(previewImageUrl.value)
+        previewImageUrl.value = null
+      }
+      
+      // Clear selection
+      selectedFile.value = null
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    }
+  } catch (error: any) {
+    console.error('Error uploading image:', error)
+    toast.add({
+      title: 'Erro',
+      description: error?.data?.statusMessage || 'Não foi possível fazer upload da imagem',
+      color: 'red'
+    })
+  } finally {
+    uploadingImage.value = false
+  }
+}
+
+// Cleanup on unmount
+onBeforeUnmount(() => {
+  if (previewImageUrl.value) {
+    URL.revokeObjectURL(previewImageUrl.value)
+  }
+})
+
 const handleSubmit = async () => {
   saving.value = true
   try {
@@ -327,7 +500,7 @@ const handleSubmit = async () => {
       role: formData.value.role || null,
       current_company: formData.value.current_company || null,
       graduation_year: formData.value.graduation_year ? parseInt(formData.value.graduation_year) : null,
-      profile_image_url: formData.value.profile_image_url || null,
+      // profile_image_url is automatically synced from Clerk on the backend
       technologies: formData.value.technologies.length > 0 ? formData.value.technologies : null,
       expertise_fields: formData.value.expertise_fields.length > 0 ? formData.value.expertise_fields : null,
       updated_at: new Date().toISOString()

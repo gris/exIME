@@ -4,13 +4,14 @@
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
           <h1 class="text-2xl font-bold text-gray-900">Meu Perfil</h1>
-          <div class="flex gap-3">
+          <div class="flex gap-3 items-center">
             <UButton to="/diretorio" variant="outline" icon="i-heroicons-arrow-left">
               Voltar
             </UButton>
             <UButton to="/perfil/editar" color="green" icon="i-heroicons-pencil">
               Editar
             </UButton>
+            <UserButton />
           </div>
         </div>
       </div>

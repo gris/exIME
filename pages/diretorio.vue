@@ -14,7 +14,7 @@
               <p class="text-xs text-gray-600">Instituto Militar de Engenharia</p>
             </div>
           </div>
-          <div class="flex gap-2">
+          <div class="flex gap-3 items-center">
             <UButton
               v-if="!hasProfile"
               to="/perfil/editar"
@@ -33,16 +33,9 @@
             >
               <span class="hidden sm:inline">Meu Perfil</span>
             </UButton>
-            <UButton
-              @click="handleSignOut"
-              color="gray"
-              variant="outline"
-              size="sm"
-              icon="i-heroicons-arrow-right-on-rectangle"
-              class="hidden sm:flex"
-            >
-              Sair
-            </UButton>
+            <div class="flex items-center">
+              <UserButton />
+            </div>
           </div>
         </div>
       </div>
