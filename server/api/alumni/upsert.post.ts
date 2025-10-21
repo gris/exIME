@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { clerkClient } from '@clerk/nuxt/server'
+import { validateLinkedinUrl } from '../../../types/alumni'
 
 export default defineEventHandler(async (event) => {
   const auth = event.context.auth()
@@ -29,6 +30,13 @@ export default defineEventHandler(async (event) => {
       throw createError({ 
         statusCode: 403, 
         statusMessage: 'Forbidden: You can only edit your own profile' 
+      })
+    }
+
+    if (body.linkedin && !validateLinkedinUrl(body.linkedin)) {
+      throw createError({ 
+        statusCode: 400, 
+        statusMessage: 'Invalid LinkedIn URL' 
       })
     }
 
