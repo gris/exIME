@@ -139,7 +139,7 @@
 
             <a 
               v-if="alumni.linkedin" 
-              :href="getLinkedInUrl(alumni.linkedin)"
+              :href="alumni.linkedin"
               target="_blank"
               rel="noopener noreferrer"
               class="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600 font-medium"
@@ -291,16 +291,6 @@ const toggleTechnology = (tech: string) => {
     selectedTechnologies.value.splice(index, 1)
   } else {
     selectedTechnologies.value.push(tech)
-  }
-}
-
-const getLinkedInUrl = (linkedin?: string) => {
-  if (!linkedin || typeof linkedin !== 'string') return '#'
-  try {
-    return linkedin.startsWith('http') ? linkedin : `https://linkedin.com/in/${linkedin}`
-  } catch (e) {
-    console.error('Error formatting LinkedIn URL:', e)
-    return '#'
   }
 }
 

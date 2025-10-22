@@ -54,11 +54,12 @@
               />
             </UFormGroup>
 
-            <UFormGroup label="LinkedIn">
+            <UFormGroup label="LinkedIn" name="linkedin" :error="linkedinError">
               <UInput 
                 v-model="formData.linkedin" 
                 placeholder="https://linkedin.com/in/seu-perfil"
                 size="lg"
+                @blur="linkedinValidation"
               />
             </UFormGroup>
 
@@ -259,6 +260,7 @@
 
 <script setup lang="ts">
 import type { AlumniFormData } from '~/types/alumni'
+import { validateLinkedinUrl } from '~/types/alumni'
 
 const { userId } = useAuth()
 const toast = useToast()
@@ -307,6 +309,13 @@ const formData = ref<AlumniFormData>({
   technologies: [],
   expertise_fields: []
 })
+
+const linkedinError = ref<string | undefined>(undefined)
+
+const linkedinValidation = () => {
+  const value = formData.value.linkedin
+  linkedinError.value = !validateLinkedinUrl(value) ? 'URL de LinkedIn inválida' : undefined
+}
 
 // Fetch existing profile if editing
 const fetchProfile = async () => {
