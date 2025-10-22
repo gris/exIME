@@ -33,7 +33,7 @@ export const validateLinkedinUrl = (url: string | null): boolean => {
   if (!url) return true;
 
   const linkedInRegex =
-    /^(https?:\/\/)?(www\.)?linkedin\.com\/in\/[a-zA-Z0-9-_]{3,100}\/?$/;
+    /^https:\/\/www\.linkedin\.com\/in\/[a-zA-Z0-9-_]{3,100}\/?$/;
 
   return linkedInRegex.test(url);
 }
