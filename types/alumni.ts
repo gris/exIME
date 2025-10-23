@@ -8,6 +8,7 @@ export interface Alumni {
   role?: string
   current_company?: string
   graduation_year?: number
+  is_dropout?: boolean
   profile_image_url?: string
   technologies?: string[]
   expertise_fields?: string[]
@@ -23,6 +24,7 @@ export interface AlumniFormData {
   role: string
   current_company: string
   graduation_year: string
+  is_dropout: boolean
   profile_image_url: string
   technologies: string[]
   expertise_fields: string[]

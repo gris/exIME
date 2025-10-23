@@ -66,7 +66,8 @@ export default defineEventHandler(async (event) => {
       linkedin: body.linkedin ?? null,
       role: body.role ?? null,
       current_company: body.current_company ?? null,
-      graduation_year: body.graduation_year ?? null,
+      graduation_year: body.is_dropout ? null : (body.graduation_year ?? null),
+      is_dropout: body.is_dropout ?? false,
       profile_image_url: userImageUrl ?? null, // Automatically sync from Clerk
       technologies: body.technologies?.length ? body.technologies : null,
       expertise_fields: body.expertise_fields?.length ? body.expertise_fields : null,

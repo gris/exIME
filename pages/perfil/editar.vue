@@ -144,15 +144,38 @@
           <div class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Informações Profissionais</h3>
             
-            <UFormGroup label="Ano de Formatura IME">
-              <UInput 
-                v-model="formData.graduation_year" 
-                type="number"
-                placeholder="Ex: 2017"
-                size="lg"
-                min="1950"
-                :max="new Date().getFullYear() + 5"
-              />
+            <UFormGroup label="Status de Formatura IME">
+              <div class="space-y-3">
+                <div class="flex gap-4">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      :value="false"
+                      v-model="formData.is_dropout"
+                      class="w-4 h-4 text-green-600"
+                    />
+                    <span class="text-sm">Formado</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      :value="true"
+                      v-model="formData.is_dropout"
+                      class="w-4 h-4 text-green-600"
+                    />
+                    <span class="text-sm">Não Concluído</span>
+                  </label>
+                </div>
+                <UInput 
+                  v-if="!formData.is_dropout"
+                  v-model="formData.graduation_year" 
+                  type="number"
+                  placeholder="Ex: 2017"
+                  size="lg"
+                  min="1950"
+                  :max="new Date().getFullYear() + 5"
+                />
+              </div>
             </UFormGroup>
 
             <UFormGroup label="Cargo Atual">
@@ -305,6 +328,7 @@ const formData = ref<AlumniFormData>({
   role: '',
   current_company: '',
   graduation_year: '',
+  is_dropout: false,
   profile_image_url: '',
   technologies: [],
   expertise_fields: []
@@ -334,6 +358,7 @@ const fetchProfile = async () => {
         role: data.role || '',
         current_company: data.current_company || '',
         graduation_year: data.graduation_year ? data.graduation_year.toString() : '',
+        is_dropout: data.is_dropout || false,
         profile_image_url: data.profile_image_url || '',
         technologies: Array.isArray(data.technologies) ? data.technologies : [],
         expertise_fields: Array.isArray(data.expertise_fields) ? data.expertise_fields : []
@@ -508,7 +533,8 @@ const handleSubmit = async () => {
       linkedin: formData.value.linkedin || null,
       role: formData.value.role || null,
       current_company: formData.value.current_company || null,
-      graduation_year: formData.value.graduation_year ? parseInt(formData.value.graduation_year) : null,
+      graduation_year: formData.value.is_dropout ? null : (formData.value.graduation_year ? parseInt(formData.value.graduation_year) : null),
+      is_dropout: formData.value.is_dropout,
       // profile_image_url is automatically synced from Clerk on the backend
       technologies: formData.value.technologies.length > 0 ? formData.value.technologies : null,
       expertise_fields: formData.value.expertise_fields.length > 0 ? formData.value.expertise_fields : null,

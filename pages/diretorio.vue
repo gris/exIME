@@ -115,7 +115,15 @@
                 <div class="flex items-start justify-between gap-2 mb-1">
                   <h3 class="font-semibold truncate">{{ alumni.name }}</h3>
                   <UBadge 
-                    v-if="alumni.graduation_year" 
+                    v-if="alumni.is_dropout" 
+                    color="gray" 
+                    variant="subtle" 
+                    size="xs"
+                  >
+                    Não Concluído
+                  </UBadge>
+                  <UBadge 
+                    v-else-if="alumni.graduation_year" 
                     color="primary" 
                     variant="subtle" 
                     size="xs"

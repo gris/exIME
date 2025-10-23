@@ -54,7 +54,15 @@
                 <div class="flex items-center gap-4 flex-wrap">
                   <p v-if="profile.role" class="text-xl text-primary-600 font-medium">{{ profile.role }}</p>
                   <UBadge 
-                    v-if="profile.graduation_year" 
+                    v-if="profile.is_dropout" 
+                    color="gray" 
+                    variant="subtle" 
+                    size="lg"
+                  >
+                    Não Concluído
+                  </UBadge>
+                  <UBadge 
+                    v-else-if="profile.graduation_year" 
                     color="primary" 
                     variant="subtle" 
                     size="lg"
