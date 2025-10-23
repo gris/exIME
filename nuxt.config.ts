@@ -19,8 +19,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@clerk/nuxt',
-    '@nuxt/ui',
-    '@nuxtjs/tailwindcss'
+    '@nuxt/ui'
   ],
 
   runtimeConfig: {
