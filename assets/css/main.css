@@ -1,0 +1,89 @@
+@import 'tailwindcss';
+@import "@nuxt/ui";
+
+@theme {
+  --color-ime-50: #f0fdf4;
+  --color-ime-100: #dcfce7;
+  --color-ime-200: #bbf7d0;
+  --color-ime-300: #86efac;
+  --color-ime-400: #4ade80;
+  --color-ime-500: #22c55e;
+  --color-ime-600: #16a34a;
+  --color-ime-700: #15803d;
+  --color-ime-800: #166534;
+  --color-ime-900: #14532d;
+  
+  /* Text colors for header */
+  --color-header-title: #000000;
+  --color-header-subtitle: #1a1a1a;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-neutral-200, currentcolor);
+  }
+  
+  /* Ensure form labels are visible in dark cards */
+  label {
+    color: white !important;
+  }
+  
+  /* Specifically target form group labels */
+  form label,
+  form .label,
+  [class*="FormGroup"] label {
+    color: white !important;
+  }
+  
+  /* But allow radio/checkbox labels to be flex */
+  form label:has(input[type="radio"]),
+  form label:has(input[type="checkbox"]) {
+    display: flex !important;
+  }
+  
+  /* Force vertical layout for form groups, but not for flex containers */
+  form .space-y-4:not(:has(> [class*="flex"])) {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  /* Make inputs extend full width, but not radio/checkbox */
+  form input:not([type="radio"]):not([type="checkbox"]),
+  form textarea,
+  form select {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  /* Make UFormField and their children full width */
+  form > div > div:not([class*="flex"]),
+  form div[class*="FormField"]:not([class*="flex"]),
+  form div[class*="Input"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Hide Clerk email sections */
+  .cl-profileSection__emailAddresses,
+  .cl-profileSectionTitleText__emailAddresses,
+  .cl-profileSectionTitle__emailAddresses,
+  .cl-profileSectionContent__emailAddresses,
+  .cl-pageScrollBox__emailAddresses,
+  .cl-navbar__menuItem__emailAddresses,
+  [class*="cl-"][class*="emailAddresses"] {
+    display: none !important;
+  }
+}

@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="bg-white shadow">
+  <div class="min-h-screen bg-neutral-50">
+    <div class="bg-white shadow-sm">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-900">
+          <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">
             {{ isEditing ? 'Editar Perfil' : 'Criar Perfil' }}
           </h1>
           <UButton to="/diretorio" variant="outline" icon="i-heroicons-arrow-left">
@@ -16,56 +16,60 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center py-12">
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-green-600" />
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-primary-600" />
       </div>
 
       <!-- Form -->
       <UCard v-else>
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form @submit.prevent="handleSubmit" class="space-y-6 text-white">
           <!-- Basic Information -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold">Informações Básicas</h3>
             
-            <UFormGroup label="Nome Completo *" required>
+            <UFormField label="Nome Completo" required class="w-full">
               <UInput 
                 v-model="formData.name" 
                 placeholder="Seu nome completo"
                 size="lg"
+                class="w-full"
                 required
               />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Email *" required>
+            <UFormField label="Email" required class="w-full">
               <UInput 
                 v-model="formData.email" 
                 type="email"
                 placeholder="seu@email.com"
                 size="lg"
+                class="w-full"
                 required
               />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Telefone">
+            <UFormField label="Telefone" class="w-full">
               <UInput 
                 v-model="formData.phone" 
                 type="tel"
                 placeholder="(21) 99999-9999"
                 size="lg"
+                class="w-full"
               />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="LinkedIn" name="linkedin" :error="linkedinError">
+            <UFormField label="LinkedIn" name="linkedin" :error="linkedinError" class="w-full">
               <UInput 
                 v-model="formData.linkedin" 
                 placeholder="https://linkedin.com/in/seu-perfil"
                 size="lg"
+                class="w-full"
                 @blur="linkedinValidation"
               />
-            </UFormGroup>
+            </UFormField>
 
             <!-- Profile Picture Upload -->
             <div class="space-y-3">
-              <label class="text-sm font-medium text-gray-700">Foto do Perfil</label>
+              <label class="text-sm font-medium text-neutral-900 dark:text-white">Foto do Perfil</label>
               <div class="flex items-start gap-4">
                 <!-- Profile Image Preview -->
                 <div class="relative">
@@ -73,11 +77,11 @@
                     v-if="profileImageUrl"
                     :src="profileImageUrl" 
                     alt="Foto do perfil"
-                    class="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+                    class="w-24 h-24 rounded-full object-cover border-2 border-neutral-200"
                   />
                   <div 
                     v-else
-                    class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-3xl"
+                    class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-info-500 flex items-center justify-center text-white font-bold text-3xl"
                   >
                     {{ formData.name ? formData.name.charAt(0).toUpperCase() : '?' }}
                   </div>
@@ -92,7 +96,7 @@
 
                 <!-- Upload Controls -->
                 <div class="flex-1 space-y-3">
-                  <p class="text-sm text-gray-600">
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400">
                     Faça upload de uma foto de perfil (JPEG, PNG, GIF ou WebP, máx. 10MB)
                   </p>
                   
@@ -117,7 +121,7 @@
                     <UButton
                       v-if="selectedFile"
                       type="button"
-                      color="green"
+                      color="primary"
                       icon="i-heroicons-arrow-up-tray"
                       @click="uploadProfileImage"
                       :loading="uploadingImage"
@@ -128,10 +132,10 @@
                   </div>
 
                   <div v-if="selectedFile" class="space-y-1">
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xs text-neutral-600 dark:text-neutral-400">
                       Arquivo selecionado: {{ selectedFile.name }}
                     </p>
-                    <p class="text-xs text-green-600 font-medium">
+                    <p class="text-xs text-primary-600 font-medium">
                       ✓ Preview exibido - clique em "Upload" para salvar
                     </p>
                   </div>
@@ -144,26 +148,26 @@
           <div class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Informações Profissionais</h3>
             
-            <UFormGroup label="Status de Formatura IME">
+            <UFormField label="Status de Formatura IME" class="w-full">
               <div class="space-y-3">
-                <div class="flex gap-4">
-                  <label class="flex items-center gap-2 cursor-pointer">
+                <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                  <label class="flex items-center gap-2 cursor-pointer text-white py-2">
                     <input
                       type="radio"
                       :value="false"
                       v-model="formData.is_dropout"
-                      class="w-4 h-4 text-green-600"
+                      class="w-5 h-5 sm:w-4 sm:h-4 text-primary-600 accent-primary-600 flex-shrink-0"
                     />
-                    <span class="text-sm">Formado</span>
+                    <span class="text-base sm:text-sm">Formado</span>
                   </label>
-                  <label class="flex items-center gap-2 cursor-pointer">
+                  <label class="flex items-center gap-2 cursor-pointer text-white py-2">
                     <input
                       type="radio"
                       :value="true"
                       v-model="formData.is_dropout"
-                      class="w-4 h-4 text-green-600"
+                      class="w-5 h-5 sm:w-4 sm:h-4 text-primary-600 accent-primary-600 flex-shrink-0"
                     />
-                    <span class="text-sm">Não Concluído</span>
+                    <span class="text-base sm:text-sm">Não Concluído</span>
                   </label>
                 </div>
                 <UInput 
@@ -172,39 +176,43 @@
                   type="number"
                   placeholder="Ex: 2017"
                   size="lg"
+                  class="w-full"
                   min="1950"
                   :max="new Date().getFullYear() + 5"
                 />
               </div>
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Cargo Atual">
+            <UFormField label="Cargo Atual" class="w-full">
               <UInput 
                 v-model="formData.role" 
                 placeholder="Ex: Engenheiro de Software Senior"
                 size="lg"
+                class="w-full"
               />
-            </UFormGroup>
+            </UFormField>
 
-            <UFormGroup label="Empresa Atual">
+            <UFormField label="Empresa Atual" class="w-full">
               <UInput 
                 v-model="formData.current_company" 
                 placeholder="Nome da empresa"
                 size="lg"
+                class="w-full"
               />
-            </UFormGroup>
+            </UFormField>
           </div>
 
           <!-- Technologies -->
           <div class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Tecnologias</h3>
-            <p class="text-sm text-gray-500">Digite e pressione Enter para adicionar tecnologias</p>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Digite e pressione Enter para adicionar tecnologias</p>
             
             <div class="space-y-3">
               <UInput 
                 v-model="newTechnology" 
                 placeholder="Ex: JavaScript, Python, React..."
                 size="lg"
+                class="w-full"
                 @keydown.enter.prevent="addTechnology"
               />
               
@@ -212,10 +220,10 @@
                 <UBadge 
                   v-for="(tech, index) in formData.technologies" 
                   :key="index"
-                  color="green"
+                  color="primary"
                   variant="subtle"
                   size="md"
-                  class="cursor-pointer hover:bg-red-100"
+                  class="cursor-pointer hover:bg-error-100"
                   @click="removeTechnology(index)"
                 >
                   {{ tech }}
@@ -228,13 +236,14 @@
           <!-- Expertise Fields -->
           <div class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Áreas de Atuação</h3>
-            <p class="text-sm text-gray-500">Digite e pressione Enter para adicionar campos como "fresh food, ecommerce, crypto"</p>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Digite e pressione Enter para adicionar campos como "fresh food, ecommerce, crypto"</p>
             
             <div class="space-y-3">
               <UInput 
                 v-model="newExpertise" 
                 placeholder="Ex: fresh food, ecommerce, crypto..."
                 size="lg"
+                class="w-full"
                 @keydown.enter.prevent="addExpertise"
               />
               
@@ -242,10 +251,10 @@
                 <UBadge 
                   v-for="(field, index) in formData.expertise_fields" 
                   :key="index"
-                  color="blue"
+                  color="info"
                   variant="subtle"
                   size="md"
-                  class="cursor-pointer hover:bg-red-100"
+                  class="cursor-pointer hover:bg-error-100"
                   @click="removeExpertise(index)"
                 >
                   {{ field }}
@@ -267,7 +276,7 @@
             </UButton>
             <UButton 
               type="submit" 
-              color="green" 
+              color="primary" 
               size="lg"
               :loading="saving"
               :disabled="!formData.name || !formData.email"
@@ -442,7 +451,8 @@ const handleFileSelect = (event: Event) => {
       toast.add({
         title: 'Tipo de arquivo inválido',
         description: 'Por favor, escolha uma imagem JPEG, PNG, GIF ou WebP',
-        color: 'red'
+        color: 'error',
+        duration: 2000
       })
       return
     }
@@ -453,7 +463,8 @@ const handleFileSelect = (event: Event) => {
       toast.add({
         title: 'Arquivo muito grande',
         description: 'O tamanho máximo é 10MB',
-        color: 'red'
+        color: 'error',
+        duration: 2000
       })
       return
     }
@@ -488,7 +499,8 @@ const uploadProfileImage = async () => {
       toast.add({
         title: 'Sucesso!',
         description: 'Foto de perfil atualizada',
-        color: 'green'
+        color: 'success',
+        duration: 2000
       })
       
       // Clean up preview URL
@@ -508,7 +520,8 @@ const uploadProfileImage = async () => {
     toast.add({
       title: 'Erro',
       description: error?.data?.statusMessage || 'Não foi possível fazer upload da imagem',
-      color: 'red'
+      color: 'error',
+      duration: 2000
     })
   } finally {
     uploadingImage.value = false
@@ -549,7 +562,8 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Sucesso!',
       description: isEditing.value ? 'Perfil atualizado com sucesso' : 'Perfil criado com sucesso',
-      color: 'green'
+      color: 'success',
+      duration: 2000
     })
 
     navigateTo('/perfil')
@@ -558,7 +572,8 @@ const handleSubmit = async () => {
     toast.add({
       title: 'Erro',
       description: 'Não foi possível salvar o perfil',
-      color: 'red'
+      color: 'error',
+      duration: 2000
     })
   } finally {
     saving.value = false

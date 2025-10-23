@@ -21,21 +21,26 @@ export default defineEventHandler(async (event) => {
     config.supabaseServiceRoleKey
   )
 
-  let { data, error } = await supabase
+  // Fetch all records with explicit range to ensure no default limits apply
+  let { data, error, count } = await supabase
     .from('alumni')
-    .select('*')
+    .select('*', { count: 'exact' })
     .order('name', { ascending: true, nullsFirst: false })
+    .range(0, 9999) // Explicitly fetch up to 10,000 records
 
   // If ordering by name fails, try without ordering
   if (error) {
     console.warn('Error with name ordering, trying without order:', error)
     const fallback = await supabase
       .from('alumni')
-      .select('*')
+      .select('*', { count: 'exact' })
+      .range(0, 9999)
     
     data = fallback.data
     error = fallback.error
+    count = fallback.count
   }
+
 
   if (error) {
     console.error('Supabase error:', error)

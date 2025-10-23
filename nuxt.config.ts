@@ -3,6 +3,7 @@ import { ptBR } from '@clerk/localizations'
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
+  css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
   devServer: {
     port: 3001,

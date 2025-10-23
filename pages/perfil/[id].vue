@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="bg-white shadow">
+  <div class="min-h-screen bg-neutral-50">
+    <div class="bg-white shadow-sm">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-900">Perfil</h1>
+          <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Perfil</h1>
           <UButton to="/diretorio" variant="outline" icon="i-heroicons-arrow-left">
             Voltar ao Diretório
           </UButton>
@@ -14,15 +14,15 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center py-12">
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-green-600" />
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-primary-600" />
       </div>
 
       <!-- Not Found -->
       <UCard v-else-if="!profile" class="text-center py-12">
-        <UIcon name="i-heroicons-user-circle" class="h-16 w-16 text-gray-400 mx-auto mb-4" />
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Perfil não encontrado</h3>
-        <p class="text-gray-600 mb-6">Este perfil não existe ou foi removido</p>
-        <UButton to="/diretorio" color="green">
+        <UIcon name="i-heroicons-user-circle" class="h-16 w-16 text-neutral-400 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-neutral-900 dark:text-white mb-2">Perfil não encontrado</h3>
+        <p class="text-neutral-600 dark:text-neutral-400 mb-6">Este perfil não existe ou foi removido</p>
+        <UButton to="/diretorio" color="primary">
           Voltar ao Diretório
         </UButton>
       </UCard>
@@ -43,7 +43,7 @@
               />
               <div 
                 v-else
-                class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-4xl flex-shrink-0"
+                class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-info-500 flex items-center justify-center text-white font-bold text-4xl shrink-0"
               >
                 {{ profile.name.charAt(0).toUpperCase() }}
               </div>
@@ -55,7 +55,7 @@
                   <p v-if="profile.role" class="text-xl text-primary-600 font-medium">{{ profile.role }}</p>
                   <UBadge 
                     v-if="profile.is_dropout" 
-                    color="gray" 
+                    color="neutral" 
                     variant="subtle" 
                     size="lg"
                   >
@@ -79,30 +79,30 @@
             <h3 class="text-lg font-semibold">Informações de Contato</h3>
             
             <div v-if="profile.email" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-envelope" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-envelope" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">Email</p>
-                <a :href="`mailto:${profile.email}`" class="text-blue-500 hover:text-blue-600 hover:underline">
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">Email</p>
+                <a :href="`mailto:${profile.email}`" class="text-info-500 hover:text-info-600 hover:underline">
                   {{ profile.email }}
                 </a>
               </div>
             </div>
 
             <div v-if="profile.phone" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-phone" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-phone" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">Telefone</p>
-                <a :href="`tel:${profile.phone}`" class="text-blue-500 hover:text-blue-600 hover:underline">
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">Telefone</p>
+                <a :href="`tel:${profile.phone}`" class="text-info-500 hover:text-info-600 hover:underline">
                   {{ profile.phone }}
                 </a>
               </div>
             </div>
 
             <div v-if="profile.linkedin" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-link" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-link" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">LinkedIn</p>
-                <a :href="profile.linkedin" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-600 hover:underline">
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">LinkedIn</p>
+                <a :href="profile.linkedin" target="_blank" rel="noopener noreferrer" class="text-info-500 hover:text-info-600 hover:underline">
                   Ver Perfil no LinkedIn
                 </a>
               </div>
@@ -114,9 +114,9 @@
             <h3 class="text-lg font-semibold">Informações Profissionais</h3>
             
             <div class="flex items-center gap-3">
-              <UIcon name="i-heroicons-building-office" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-building-office" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">Empresa Atual</p>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">Empresa Atual</p>
                 <p>{{ profile.current_company }}</p>
               </div>
             </div>

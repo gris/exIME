@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="bg-white shadow">
+  <div class="min-h-screen bg-neutral-50">
+    <div class="bg-white shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div class="flex justify-between items-center">
           <div class="flex items-center gap-3">
@@ -10,15 +10,15 @@
               class="w-16 h-16 object-contain"
             />
             <div>
-              <h1 class="text-xl font-bold text-gray-900">IME</h1>
-              <p class="text-xs text-gray-600">Instituto Militar de Engenharia</p>
+              <h1 class="text-xl font-bold !text-slate-950">IME</h1>
+              <p class="text-xs !text-slate-900">Instituto Militar de Engenharia</p>
             </div>
           </div>
           <div class="flex gap-3 items-center">
             <UButton
               v-if="!hasProfile"
               to="/perfil/editar"
-              color="green"
+              color="primary"
               size="sm"
               icon="i-heroicons-plus"
             >
@@ -38,7 +38,12 @@
                 :user-profile-props="{
                   appearance: {
                     elements: {
-                      profileSection__emailAddresses: 'hidden'
+                      pageScrollBox__emailAddresses: 'hidden',
+                      navbar__menuItem__emailAddresses: 'hidden',
+                      profileSection__emailAddresses: 'hidden',
+                      profileSectionTitleText__emailAddresses: 'hidden',
+                      profileSectionTitle__emailAddresses: 'hidden',
+                      profileSectionContent__emailAddresses: 'hidden'
                     }
                   }
                 }"
@@ -55,6 +60,7 @@
         <UInput
           v-model="searchQuery"
           size="xl"
+          class="w-full"
           placeholder="Buscar por nome, empresa, ano de formatura ou tecnologia..."
           icon="i-heroicons-magnifying-glass"
           :ui="{ icon: { trailing: { pointer: '' } } }"
@@ -64,8 +70,8 @@
           <UButton
             v-for="tech in popularTechnologies"
             :key="tech"
-            :variant="selectedTechnologies.includes(tech) ? 'solid' : 'outline'"
-            :color="selectedTechnologies.includes(tech) ? 'green' : 'gray'"
+            :variant="selectedTechnologies.includes(tech) ? 'solid' : 'subtle'"
+            :color="selectedTechnologies.includes(tech) ? 'primary' : 'neutral'"
             size="sm"
             @click="toggleTechnology(tech)"
           >
@@ -81,7 +87,7 @@
       
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center py-12">
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-green-600" />
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-primary-600" />
       </div>
 
       <!-- Alumni Grid -->
@@ -95,17 +101,17 @@
         >
           <div class="space-y-4">
             <div class="flex items-start gap-4">
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <img 
                   v-if="alumni.profile_image_url"
                   :src="alumni.profile_image_url" 
                   :alt="alumni.name"
                   class="w-14 h-14 rounded-full object-cover"
-                  @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
+                  @error="(e: Event) => (e.target as HTMLImageElement).style.display = 'none'"
                 />
                 <div 
                   v-else
-                  class="w-14 h-14 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-semibold text-lg"
+                  class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-info-500 flex items-center justify-center text-white font-semibold text-lg"
                 >
                   {{ alumni.name.charAt(0).toUpperCase() }}
                 </div>
@@ -116,7 +122,7 @@
                   <h3 class="font-semibold truncate">{{ alumni.name }}</h3>
                   <UBadge 
                     v-if="alumni.is_dropout" 
-                    color="gray" 
+                    color="neutral" 
                     variant="subtle" 
                     size="xs"
                   >
@@ -136,12 +142,12 @@
             </div>
             
             <div v-if="alumni.current_company" class="flex items-center gap-2 text-sm">
-              <UIcon name="i-heroicons-building-office" class="h-4 w-4 flex-shrink-0" />
+              <UIcon name="i-heroicons-building-office" class="h-4 w-4 shrink-0" />
               <span class="truncate">{{ alumni.current_company }}</span>
             </div>
 
             <div v-if="alumni.email" class="flex items-center gap-2 text-sm">
-              <UIcon name="i-heroicons-envelope" class="h-4 w-4 flex-shrink-0" />
+              <UIcon name="i-heroicons-envelope" class="h-4 w-4 shrink-0" />
               <span class="truncate">{{ alumni.email }}</span>
             </div>
 
@@ -150,10 +156,10 @@
               :href="alumni.linkedin"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600 font-medium"
+              class="flex items-center gap-2 text-sm text-info-500 hover:text-info-600 font-medium"
               @click.stop
             >
-              <UIcon name="i-heroicons-link" class="h-4 w-4 flex-shrink-0" />
+              <UIcon name="i-heroicons-link" class="h-4 w-4 shrink-0" />
               <span class="truncate">LinkedIn</span>
             </a>
 
@@ -183,9 +189,9 @@
 
       <!-- Empty State -->
       <div v-else class="text-center py-12">
-        <UIcon name="i-heroicons-user-group" class="h-16 w-16 text-gray-400 mx-auto mb-4" />
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum resultado encontrado</h3>
-        <p class="text-gray-600">Tente ajustar seus filtros de busca</p>
+        <UIcon name="i-heroicons-user-group" class="h-16 w-16 text-neutral-400 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-neutral-900 dark:text-white mb-2">Nenhum resultado encontrado</h3>
+        <p class="text-neutral-600 dark:text-neutral-400">Tente ajustar seus filtros de busca</p>
       </div>
     </div>
 
@@ -201,7 +207,7 @@
       <button
         v-show="showBackToTop"
         @click="scrollToTop"
-        class="fixed bottom-8 right-8 bg-gray-900 hover:bg-gray-800 text-white rounded-full p-3 shadow-lg transition-colors z-50"
+        class="fixed bottom-8 right-8 bg-neutral-900 hover:bg-neutral-800 text-white rounded-full p-3 shadow-lg transition-colors z-50"
         aria-label="Voltar ao topo"
       >
         <UIcon name="i-heroicons-arrow-up" class="h-5 w-5" />
@@ -229,8 +235,10 @@ const popularTechnologies = [
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array]
   for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    const j = Math.floor(Math.random() * (i + 1))
+    const temp = shuffled[i]!
+    shuffled[i] = shuffled[j]!
+    shuffled[j] = temp
   }
   return shuffled
 }

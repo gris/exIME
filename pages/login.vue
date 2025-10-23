@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
     <SignIn 
       :routing="'path'"
       :path="'/login'"

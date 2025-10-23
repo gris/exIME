@@ -1,21 +1,26 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="bg-white shadow">
+  <div class="min-h-screen bg-neutral-50">
+    <div class="bg-white shadow-sm">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
-          <h1 class="text-2xl font-bold text-gray-900">Meu Perfil</h1>
+          <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Meu Perfil</h1>
           <div class="flex gap-3 items-center">
             <UButton to="/diretorio" variant="outline" icon="i-heroicons-arrow-left">
               Voltar
             </UButton>
-            <UButton to="/perfil/editar" color="green" icon="i-heroicons-pencil">
+            <UButton to="/perfil/editar" color="primary" icon="i-heroicons-pencil">
               Editar
             </UButton>
             <UserButton 
               :user-profile-props="{
                 appearance: {
                   elements: {
-                    profileSection__emailAddresses: 'hidden'
+                    pageScrollBox__emailAddresses: 'hidden',
+                    navbar__menuItem__emailAddresses: 'hidden',
+                    profileSection__emailAddresses: 'hidden',
+                    profileSectionTitleText__emailAddresses: 'hidden',
+                    profileSectionTitle__emailAddresses: 'hidden',
+                    profileSectionContent__emailAddresses: 'hidden'
                   }
                 }
               }"
@@ -28,15 +33,15 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center py-12">
-        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-green-600" />
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-primary-600" />
       </div>
 
       <!-- No Profile State -->
       <UCard v-else-if="!profile" class="text-center py-12">
-        <UIcon name="i-heroicons-user-circle" class="h-16 w-16 text-gray-400 mx-auto mb-4" />
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Você ainda não criou seu perfil</h3>
-        <p class="text-gray-600 mb-6">Crie seu perfil para aparecer no diretório de alunos e ex-alunos</p>
-        <UButton to="/perfil/editar" color="green" size="lg">
+        <UIcon name="i-heroicons-user-circle" class="h-16 w-16 text-neutral-400 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-neutral-900 dark:text-white mb-2">Você ainda não criou seu perfil</h3>
+        <p class="text-neutral-600 dark:text-neutral-400 mb-6">Crie seu perfil para aparecer no diretório de alunos e ex-alunos</p>
+        <UButton to="/perfil/editar" color="primary" size="lg">
           Criar Perfil
         </UButton>
       </UCard>
@@ -53,11 +58,11 @@
                 :src="profile.profile_image_url" 
                 :alt="profile.name"
                 class="w-24 h-24 rounded-full object-cover"
-                @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
+                @error="(e: Event) => (e.target as HTMLImageElement).style.display = 'none'"
               />
               <div 
                 v-else
-                class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-blue-500 flex items-center justify-center text-white font-bold text-4xl flex-shrink-0"
+                class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-info-500 flex items-center justify-center text-white font-bold text-4xl shrink-0"
               >
                 {{ profile.name.charAt(0).toUpperCase() }}
               </div>
@@ -69,7 +74,7 @@
                   <p v-if="profile.role" class="text-xl text-primary-600 font-medium">{{ profile.role }}</p>
                   <UBadge 
                     v-if="profile.is_dropout" 
-                    color="gray" 
+                    color="neutral" 
                     variant="subtle" 
                     size="lg"
                   >
@@ -93,26 +98,26 @@
             <h3 class="text-lg font-semibold">Informações de Contato</h3>
             
             <div v-if="profile.email" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-envelope" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-envelope" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">Email</p>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">Email</p>
                 <p>{{ profile.email }}</p>
               </div>
             </div>
 
             <div v-if="profile.phone" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-phone" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-phone" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">Telefone</p>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">Telefone</p>
                 <p>{{ profile.phone }}</p>
               </div>
             </div>
 
             <div v-if="profile.linkedin" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-link" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-link" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">LinkedIn</p>
-                <a :href="profile.linkedin" target="_blank" class="text-blue-500 hover:text-blue-600 hover:underline">
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">LinkedIn</p>
+                <a :href="profile.linkedin" target="_blank" class="text-info-500 hover:text-info-600 hover:underline">
                   {{ profile.linkedin }}
                 </a>
               </div>
@@ -124,9 +129,9 @@
             <h3 class="text-lg font-semibold">Informações Profissionais</h3>
             
             <div class="flex items-center gap-3">
-              <UIcon name="i-heroicons-building-office" class="h-6 w-6 flex-shrink-0" />
+              <UIcon name="i-heroicons-building-office" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-gray-500">Empresa Atual</p>
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">Empresa Atual</p>
                 <p>{{ profile.current_company }}</p>
               </div>
             </div>
