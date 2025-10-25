@@ -40,11 +40,15 @@
               <UInput 
                 v-model="formData.email" 
                 type="email"
-                placeholder="seu@email.com"
                 size="lg"
-                class="w-full"
-                required
-              />
+                class="w-full opacity-60 bg-neutral-100 dark:bg-neutral-800"
+                disabled
+                readonly
+              >
+                <template #trailing>
+                  <UIcon name="i-heroicons-lock-closed" class="text-neutral-400" />
+                </template>
+              </UInput>
             </UFormField>
 
             <UFormField label="Telefone" class="w-full">
@@ -353,6 +357,22 @@ const linkedinValidation = () => {
 // Fetch existing profile if editing
 const fetchProfile = async () => {
   loading.value = true
+  
+  // Always get email from Clerk user (client-side only)
+  let clerkEmail = ''
+  let clerkName = ''
+  if (process.client) {
+    try {
+      const { user } = useUser()
+      if (user?.value) {
+        clerkEmail = user.value.primaryEmailAddress?.emailAddress || ''
+        clerkName = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
+      }
+    } catch (authError) {
+      console.error('Could not get Clerk user data:', authError)
+    }
+  }
+  
   try {
     const data = await $fetch('/api/alumni/me')
     
@@ -360,9 +380,9 @@ const fetchProfile = async () => {
       // Profile found - auto-fill form with existing data
       isEditing.value = true
       formData.value = {
-        name: data.name || '',
+        name: data.name || clerkName,
         phone: data.phone || '',
-        email: data.email || '',
+        email: clerkEmail || data.email || '', // use Clerk email first
         linkedin: data.linkedin || '',
         role: data.role || '',
         current_company: data.current_company || '',
@@ -375,37 +395,15 @@ const fetchProfile = async () => {
     } else {
       // No profile found - creating new one
       isEditing.value = false
-      
-      // Pre-populate with Clerk user data for new profiles (client-side only)
-      if (process.client) {
-        try {
-          const { user } = useUser()
-          if (user?.value) {
-            formData.value.name = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
-            formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
-          }
-        } catch (authError) {
-          // Could not get auth user data
-        }
-      }
+      formData.value.name = clerkName
+      formData.value.email = clerkEmail
     }
   } catch (error) {
     console.error('Error fetching profile:', error)
     // If error occurred, we're creating a new one
     isEditing.value = false
-    
-    // Pre-populate with Clerk user data for new profiles (client-side only)
-    if (process.client) {
-      try {
-        const { user } = useUser()
-        if (user?.value) {
-          formData.value.name = user.value.fullName || `${user.value.firstName || ''} ${user.value.lastName || ''}`.trim() || ''
-          formData.value.email = user.value.primaryEmailAddress?.emailAddress || ''
-        }
-      } catch (authError) {
-        // Could not get auth user data
-      }
-    }
+    formData.value.name = clerkName
+    formData.value.email = clerkEmail
   } finally {
     loading.value = false
   }

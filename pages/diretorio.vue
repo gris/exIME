@@ -24,16 +24,6 @@
             >
               <span class="hidden sm:inline">Criar Perfil</span>
             </UButton>
-            <UButton
-              v-else
-              to="/perfil"
-              variant="outline"
-              size="sm"
-              icon="i-heroicons-user"
-            >
-              <span class="hidden sm:inline">Meu Perfil</span>
-            </UButton>
-            <div class="flex items-center">
               <UserButton 
                 :user-profile-props="{
                   appearance: {
@@ -47,8 +37,17 @@
                     }
                   }
                 }"
-              />
-            </div>
+              >
+                <UserButton.MenuItems>
+                  <UserButton.Link label="Meu Perfil" href="/perfil/">
+                    <template #labelIcon>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 1 .41-1.108 9.06 9.06 0 0 1 12.25 0c.433.39.465.933.41 1.108a.678.678 0 0 1-.313.486l-.03.022A13.617 13.617 0 0 1 10 16a13.617 13.617 0 0 1-6.192-1.001l-.03-.022a.678.678 0 0 1-.313-.486Z" />
+                      </svg>
+                    </template>
+                  </UserButton.Link>
+                </UserButton.MenuItems>
+              </UserButton>
           </div>
         </div>
       </div>
@@ -218,12 +217,13 @@
 
 <script setup lang="ts">
 import type { Alumni } from '~/types/alumni'
+import { UserButton } from '@clerk/vue'
 
 const alumni = ref<Alumni[]>([])
 const loading = ref(true)
 const searchQuery = ref('')
 const selectedTechnologies = ref<string[]>([])
-const hasProfile = ref(false)
+const hasProfile = ref(true)
 const showBackToTop = ref(false)
 
 const popularTechnologies = [
