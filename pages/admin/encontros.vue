@@ -1,86 +1,6 @@
 <template>
     <div class="min-h-screen bg-neutral-50">
-        <!-- Header -->
-        <div class="bg-white shadow-sm">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <img
-                            src="/images/ime-logo.png"
-                            alt="IME Logo"
-                            class="w-16 h-16 object-contain"
-                        />
-                        <div>
-                            <h1 class="text-xl font-bold !text-slate-950">
-                                IME
-                            </h1>
-                            <p class="text-xs !text-slate-900">
-                                Instituto Militar de Engenharia
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex gap-3 items-center">
-                        <UButton
-                            to="/diretorio"
-                            variant="outline"
-                            size="sm"
-                            icon="i-heroicons-user-group"
-                        >
-                            <span class="hidden sm:inline">Diretório</span>
-                        </UButton>
-                        <UButton
-                            to="/encontros"
-                            variant="outline"
-                            size="sm"
-                            icon="i-heroicons-calendar-days"
-                        >
-                            <span class="hidden sm:inline">Encontros</span>
-                        </UButton>
-                        <div class="flex items-center">
-                            <UserButton
-                                :user-profile-props="{
-                                    appearance: {
-                                        elements: {
-                                            pageScrollBox__emailAddresses:
-                                                'hidden',
-                                            navbar__menuItem__emailAddresses:
-                                                'hidden',
-                                            profileSection__emailAddresses:
-                                                'hidden',
-                                            profileSectionTitleText__emailAddresses:
-                                                'hidden',
-                                            profileSectionTitle__emailAddresses:
-                                                'hidden',
-                                            profileSectionContent__emailAddresses:
-                                                'hidden',
-                                        },
-                                    },
-                                }"
-                            >
-                                <UserButton.MenuItems>
-                                    <UserButton.Link
-                                        label="Meu Perfil"
-                                        href="/perfil/"
-                                    >
-                                        <template #labelIcon>
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 1 .41-1.108 9.06 9.06 0 0 1 12.25 0c.433.39.465.933.41 1.108a.678.678 0 0 1-.313.486l-.03.022A13.617 13.617 0 0 1 10 16a13.617 13.617 0 0 1-6.192-1.001l-.03-.022a.678.678 0 0 1-.313-.486Z"
-                                                />
-                                            </svg>
-                                        </template>
-                                    </UserButton.Link>
-                                </UserButton.MenuItems>
-                            </UserButton>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <AppHeader />
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Page Title -->
@@ -514,7 +434,6 @@
 </template>
 
 <script setup lang="ts">
-import { UserButton } from "@clerk/vue";
 import type { Encontro, Topic } from "~/types/encontros";
 
 definePageMeta({
