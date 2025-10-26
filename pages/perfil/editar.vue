@@ -299,6 +299,7 @@ import type { AlumniFormData } from '~/types/alumni'
 import { validateLinkedinUrl } from '~/types/alumni'
 
 const { userId } = useAuth()
+const { user: clerkUser } = useUser()
 const toast = useToast()
 
 const loading = ref(true)
@@ -326,11 +327,7 @@ const profileImageUrl = computed(() => {
     return uploadedImageUrl.value
   }
   
-  if (process.client) {
-    const { user: clerkUser } = useUser()
-    return clerkUser?.value?.imageUrl || null
-  }
-  return null
+  return clerkUser?.value?.imageUrl || null
 })
 
 const formData = ref<AlumniFormData>({
@@ -395,15 +392,23 @@ const fetchProfile = async () => {
     } else {
       // No profile found - creating new one
       isEditing.value = false
-      formData.value.name = clerkName
-      formData.value.email = clerkEmail
+      
+      // Pre-populate with Clerk user data for new profiles
+      if (clerkUser?.value) {
+        formData.value.name = clerkUser.value.fullName || `${clerkUser.value.firstName || ''} ${clerkUser.value.lastName || ''}`.trim() || ''
+        formData.value.email = clerkUser.value.primaryEmailAddress?.emailAddress || ''
+      }
     }
   } catch (error) {
     console.error('Error fetching profile:', error)
     // If error occurred, we're creating a new one
     isEditing.value = false
-    formData.value.name = clerkName
-    formData.value.email = clerkEmail
+    
+    // Pre-populate with Clerk user data for new profiles
+    if (clerkUser?.value) {
+      formData.value.name = clerkUser.value.fullName || `${clerkUser.value.firstName || ''} ${clerkUser.value.lastName || ''}`.trim() || ''
+      formData.value.email = clerkUser.value.primaryEmailAddress?.emailAddress || ''
+    }
   } finally {
     loading.value = false
   }

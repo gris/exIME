@@ -16,6 +16,14 @@
           </div>
           <div class="flex gap-3 items-center">
             <UButton
+              to="/encontros"
+              variant="outline"
+              size="sm"
+              icon="i-heroicons-calendar-days"
+            >
+              <span class="hidden sm:inline">Encontros</span>
+            </UButton>
+            <UButton
               v-if="!hasProfile"
               to="/perfil/editar"
               color="primary"
@@ -62,7 +70,6 @@
           class="w-full"
           placeholder="Buscar por nome, empresa, ano de formatura ou tecnologia..."
           icon="i-heroicons-magnifying-glass"
-          :ui="{ icon: { trailing: { pointer: '' } } }"
         />
         
         <div class="flex flex-wrap gap-2">

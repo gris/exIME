@@ -242,6 +242,18 @@ INSERT INTO public.alumni (
     NULL
 );
 
+-- Insert sample encontros
+INSERT INTO public.encontros (
+    date,
+    time,
+    topics
+) VALUES
+(
+    '2025-10-30',
+    '20:30:00',
+    '[{"speaker": "Prof. Carlos Eduardo", "talk_name": "Inteligência Artificial: Estado da Arte e Aplicações Práticas"}]'::jsonb
+);
+
 -- Display seed statistics
 SELECT 
     COUNT(*) as total_alumni,

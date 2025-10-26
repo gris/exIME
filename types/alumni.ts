@@ -9,6 +9,7 @@ export interface Alumni {
   current_company?: string
   graduation_year?: number
   is_dropout?: boolean
+  is_admin?: boolean
   profile_image_url?: string
   technologies?: string[]
   expertise_fields?: string[]
