@@ -206,20 +206,28 @@ const fetchEncontros = async () => {
   }
 }
 
-// Date formatting functions
+// Date formatting functions - parse as local date to avoid timezone issues
+const parseLocalDate = (dateString: string) => {
+  const parts = dateString.split('-').map(Number)
+  const year = parts[0] || 2025
+  const month = parts[1] || 1
+  const day = parts[2] || 1
+  return new Date(year, month - 1, day)
+}
+
 const formatDay = (dateString: string) => {
-  const date = new Date(dateString)
+  const date = parseLocalDate(dateString)
   return date.getDate()
 }
 
 const formatMonth = (dateString: string) => {
-  const date = new Date(dateString)
+  const date = parseLocalDate(dateString)
   const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
   return months[date.getMonth()]
 }
 
 const formatFullDate = (dateString: string) => {
-  const date = new Date(dateString)
+  const date = parseLocalDate(dateString)
   const options: Intl.DateTimeFormatOptions = { 
     weekday: 'long', 
     year: 'numeric', 
@@ -236,7 +244,7 @@ const formatTime = (timeString: string) => {
 }
 
 const isPastEvent = (dateString: string) => {
-  const eventDate = new Date(dateString)
+  const eventDate = parseLocalDate(dateString)
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   return eventDate < today

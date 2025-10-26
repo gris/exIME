@@ -251,7 +251,7 @@ INSERT INTO public.encontros (
 (
     '2025-10-30',
     '20:30:00',
-    '[{"speaker": "Prof. Carlos Eduardo", "talk_name": "Inteligência Artificial: Estado da Arte e Aplicações Práticas"}]'::jsonb
+    '[{"speaker": "TBD", "talk_name": "Vibe Coding na Prática"}]'::jsonb
 );
 
 -- Display seed statistics
