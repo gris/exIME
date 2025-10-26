@@ -34,14 +34,14 @@
           <div class="border-b pb-6">
             <div class="flex items-start gap-6 mb-4">
               <!-- Profile Image -->
-              <img 
+              <img
                 v-if="profile.profile_image_url"
-                :src="profile.profile_image_url" 
+                :src="profile.profile_image_url"
                 :alt="profile.name"
                 class="w-24 h-24 rounded-full object-cover"
                 @error="(e) => (e.target as HTMLImageElement).style.display = 'none'"
               />
-              <div 
+              <div
                 v-else
                 class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-info-500 flex items-center justify-center text-white font-bold text-4xl shrink-0"
               >
@@ -53,18 +53,18 @@
                 <h2 class="text-3xl font-bold mb-2">{{ profile.name }}</h2>
                 <div class="flex items-center gap-4 flex-wrap">
                   <p v-if="profile.role" class="text-xl text-primary-600 font-medium">{{ profile.role }}</p>
-                  <UBadge 
-                    v-if="profile.is_dropout" 
-                    color="neutral" 
-                    variant="subtle" 
+                  <UBadge
+                    v-if="profile.is_dropout"
+                    color="neutral"
+                    variant="subtle"
                     size="lg"
                   >
                     Não Concluído
                   </UBadge>
-                  <UBadge 
-                    v-else-if="profile.graduation_year" 
-                    color="primary" 
-                    variant="subtle" 
+                  <UBadge
+                    v-else-if="profile.graduation_year"
+                    color="primary"
+                    variant="subtle"
                     size="lg"
                   >
                     Turma {{ profile.graduation_year }}
@@ -77,7 +77,7 @@
           <!-- Contact Information -->
           <div class="space-y-4">
             <h3 class="text-lg font-semibold">Informações de Contato</h3>
-            
+
             <div v-if="profile.email" class="flex items-center gap-3">
               <UIcon name="i-heroicons-envelope" class="h-6 w-6 shrink-0" />
               <div>
@@ -89,10 +89,10 @@
             </div>
 
             <div v-if="profile.phone" class="flex items-center gap-3">
-              <UIcon name="i-heroicons-phone" class="h-6 w-6 shrink-0" />
+              <UIcon name="i-heroicons-chat-bubble-left-right" class="h-6 w-6 shrink-0" />
               <div>
-                <p class="text-sm text-neutral-600 dark:text-neutral-400">Telefone</p>
-                <a :href="`tel:${profile.phone}`" class="text-info-500 hover:text-info-600 hover:underline">
+                <p class="text-sm text-neutral-600 dark:text-neutral-400">WhatsApp</p>
+                <a :href="`https://wa.me/${profile.phone.replace(/\D/g, '')}`" target="_blank" rel="noopener noreferrer" class="text-info-500 hover:text-info-600 hover:underline">
                   {{ profile.phone }}
                 </a>
               </div>
@@ -112,7 +112,7 @@
           <!-- Professional Information -->
           <div v-if="profile.current_company" class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Informações Profissionais</h3>
-            
+
             <div class="flex items-center gap-3">
               <UIcon name="i-heroicons-building-office" class="h-6 w-6 shrink-0" />
               <div>
@@ -126,8 +126,8 @@
           <div v-if="profile.technologies && profile.technologies.length > 0" class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Tecnologias</h3>
             <div class="flex flex-wrap gap-2">
-              <UBadge 
-                v-for="tech in profile.technologies" 
+              <UBadge
+                v-for="tech in profile.technologies"
                 :key="tech"
                 color="primary"
                 variant="subtle"
@@ -142,8 +142,8 @@
           <div v-if="profile.expertise_fields && profile.expertise_fields.length > 0" class="space-y-4 pt-6 border-t">
             <h3 class="text-lg font-semibold">Áreas de Especialização</h3>
             <div class="flex flex-wrap gap-2">
-              <UBadge 
-                v-for="field in profile.expertise_fields" 
+              <UBadge
+                v-for="field in profile.expertise_fields"
                 :key="field"
                 variant="subtle"
                 size="md"
@@ -188,4 +188,3 @@ onMounted(() => {
   fetchProfile()
 })
 </script>
-
