@@ -28,9 +28,6 @@
     "vitest": "^3.2.4"
   },
   "engines": {
-    "node": ">=22.0.0"
-  },
-  "overrides": {
-    "tsconfck": "^3.1.5"
+    "node": "22.x"
   }
 }
