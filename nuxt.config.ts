@@ -67,6 +67,9 @@ export default defineNuxtConfig({
     },
     ssr: {
       noExternal: ['@clerk/nuxt', 'cookie']
+    },
+    build: {
+      sourcemap: true
     }
   }
   ,
