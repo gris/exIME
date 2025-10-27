@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clerk/localizations": "^3.26.2",
-    "@clerk/nuxt": "^1.0.0",
+    "@clerk/nuxt": "^1.11.1",
     "@nuxt/ui": "^4.1.0",
     "@supabase/supabase-js": "^2.76.1",
     "nuxt": "^4.1.3",
