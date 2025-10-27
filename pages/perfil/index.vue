@@ -176,13 +176,25 @@
 <script setup lang="ts">
 import type { Alumni } from '~/types/alumni'
 
-const { userId } = useAuth()
+const { userId, isSignedIn, isLoaded } = useAuth()
 const supabase = useSupabase()
 
 const profile = ref<Alumni | null>(null)
 const loading = ref(true)
 
 const fetchProfile = async () => {
+  // Wait for auth to be loaded
+  if (!isLoaded.value) {
+    return
+  }
+
+  // If not signed in, redirect to login
+  if (!isSignedIn.value) {
+    loading.value = false
+    return
+  }
+
+  // If no userId yet, wait a bit more
   if (!userId.value) {
     loading.value = false
     return
@@ -201,9 +213,12 @@ const fetchProfile = async () => {
   }
 }
 
-onMounted(() => {
-  fetchProfile()
-})
+// Watch for auth to be loaded before fetching profile
+watch([isLoaded, isSignedIn, userId], () => {
+  if (isLoaded.value) {
+    fetchProfile()
+  }
+}, { immediate: true })
 </script>
 
 

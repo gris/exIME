@@ -1,3 +1,5 @@
+import { clerkClient } from '@clerk/nuxt/server'
+
 export default defineNuxtRouteMiddleware(async (to) => {
   // Only run on admin routes
   if (!to.path.startsWith('/admin')) {
@@ -18,6 +20,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     // Check admin status from database
     try {
+      // Get user email from Clerk
+      const user = await clerkClient(event).users.getUser(userId)
+      const userEmail = user.primaryEmailAddress?.emailAddress
+
+      if (!userEmail) {
+        console.error('User email not found')
+        return navigateTo('/diretorio')
+      }
+
       const config = useRuntimeConfig()
       const { createClient } = await import('@supabase/supabase-js')
 
@@ -29,7 +40,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       const { data: alumni } = await supabase
         .from('alumni')
         .select('is_admin')
-        .eq('clerk_user_id', userId)
+        .eq('email', userEmail)
         .single()
 
       if (!alumni || !alumni.is_admin) {

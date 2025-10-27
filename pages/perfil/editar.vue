@@ -389,7 +389,7 @@
 import type { AlumniFormData } from "~/types/alumni";
 import { validateLinkedinUrl } from "~/types/alumni";
 
-const { userId } = useAuth();
+const { userId, isLoaded, isSignedIn } = useAuth();
 const { user: clerkUser } = useUser();
 const toast = useToast();
 
@@ -446,6 +446,17 @@ const linkedinValidation = () => {
 
 // Fetch existing profile if editing
 const fetchProfile = async () => {
+    // Wait for auth to be loaded
+    if (!isLoaded.value) {
+        return;
+    }
+
+    // If not signed in, stop loading
+    if (!isSignedIn.value) {
+        loading.value = false;
+        return;
+    }
+
     loading.value = true;
 
     // Always get email from Clerk user (client-side only)
@@ -728,7 +739,10 @@ const handleSubmit = async () => {
     }
 };
 
-onMounted(() => {
-    fetchProfile();
-});
+// Watch for auth to be loaded before fetching profile
+watch([isLoaded, isSignedIn, userId], () => {
+    if (isLoaded.value) {
+        fetchProfile();
+    }
+}, { immediate: true });
 </script>

@@ -183,7 +183,7 @@ import type { Alumni } from "~/types/alumni";
 
 const encontros = ref<Encontro[]>([]);
 const loading = ref(true);
-const hasProfile = ref(true);
+const hasProfile = ref(false);
 const showBackToTop = ref(false);
 
 // Fetch encontros data
