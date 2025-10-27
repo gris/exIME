@@ -12,13 +12,13 @@ export interface UseAdminReturn {
  * Fetches the user's profile and caches the admin status
  */
 export const useAdmin = (): UseAdminReturn => {
-  const isAdmin = useState<boolean>("isAdmin", () => false);
+  const isAdmin = useState<boolean | null>("isAdmin", () => null);
   const loading = useState<boolean>("isAdminLoading", () => false);
   const error = useState<string | null>("isAdminError", () => null);
 
   const checkAdmin = async () => {
-    // Skip if already checked
-    if (isAdmin.value || loading.value) {
+    // Skip if already checked (regardless of true/false result)
+    if (isAdmin.value !== null || loading.value) {
       return;
     }
 
@@ -43,12 +43,15 @@ export const useAdmin = (): UseAdminReturn => {
   };
 
   // Auto-check when the composable is first used
-  if (!isAdmin.value && !loading.value && process.client) {
+  if (isAdmin.value === null && !loading.value && process.client) {
     checkAdmin();
   }
 
+  // Return a computed boolean that treats null as false for API compatibility
+  const isAdminValue = computed(() => isAdmin.value === true);
+
   return {
-    isAdmin: readonly(isAdmin) as Ref<boolean>,
+    isAdmin: readonly(isAdminValue),
     loading: readonly(loading) as Ref<boolean>,
     error: readonly(error) as Ref<string | null>,
     checkAdmin,
