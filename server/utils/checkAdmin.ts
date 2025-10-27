@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { H3Event } from 'h3'
+import { clerkClient } from '@clerk/nuxt/server'
 
 export interface AdminCheckResult {
   isAdmin: boolean
@@ -35,6 +36,26 @@ export async function checkAdmin(event: H3Event): Promise<AdminCheckResult> {
     })
   }
 
+  // Get user email from Clerk
+  let userEmail: string | undefined
+  try {
+    const user = await clerkClient(event).users.getUser(userId)
+    userEmail = user.primaryEmailAddress?.emailAddress
+  } catch (error) {
+    console.error('Error getting user from Clerk:', error)
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to get user email from Clerk'
+    })
+  }
+
+  if (!userEmail) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'User email not found'
+    })
+  }
+
   // Create Supabase client
   const supabase = createClient(
     config.public.supabaseUrl,
@@ -42,11 +63,11 @@ export async function checkAdmin(event: H3Event): Promise<AdminCheckResult> {
   )
 
   try {
-    // Query alumni table to check admin status
+    // Query alumni table to check admin status - use email as the primary identifier
     const { data: alumni, error } = await supabase
       .from('alumni')
       .select('id, name, email, is_admin, clerk_user_id')
-      .eq('clerk_user_id', userId)
+      .eq('email', userEmail)
       .single()
 
     if (error) {
