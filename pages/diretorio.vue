@@ -2,194 +2,89 @@
     <div class="min-h-screen bg-neutral-50">
         <AppHeader :show-create-profile="!hasProfile" />
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <!-- Search and Filters -->
-            <div class="mb-8 space-y-4">
-                <UInput
-                    v-model="searchQuery"
-                    size="xl"
-                    class="w-full"
-                    placeholder="Buscar por nome, empresa, ano de formatura ou tecnologia..."
-                    icon="i-heroicons-magnifying-glass"
-                />
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Search and Filters -->
+      <div class="mb-8 space-y-4">
+        <UInput
+          v-model="searchQuery"
+          size="xl"
+          class="w-full"
+          placeholder="Buscar por nome, empresa, ano de formatura ou tecnologia..."
+          icon="i-heroicons-magnifying-glass"
+        />
 
-                <div class="flex flex-wrap gap-2">
-                    <UButton
-                        v-for="tech in popularTechnologies"
-                        :key="tech"
-                        :variant="
-                            selectedTechnologies.includes(tech)
-                                ? 'solid'
-                                : 'subtle'
-                        "
-                        :color="
-                            selectedTechnologies.includes(tech)
-                                ? 'primary'
-                                : 'neutral'
-                        "
-                        size="sm"
-                        @click="toggleTechnology(tech)"
-                    >
-                        {{ tech }}
-                    </UButton>
-                </div>
-            </div>
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            v-for="tech in popularTechnologies"
+            :key="tech"
+            :variant="selectedTechnologies.includes(tech) ? 'solid' : 'subtle'"
+            :color="selectedTechnologies.includes(tech) ? 'primary' : 'neutral'"
+            size="sm"
+            @click="toggleTechnology(tech)"
+          >
+            {{ tech }}
+          </UButton>
+        </div>
+      </div>
 
-            <!-- Counter -->
-            <div class="py-2 text-black font-bold">
-                {{ filteredAlumni.length }} pessoas encontradas
-            </div>
+      <!-- Counter and View Toggle -->
+      <div class="py-2 flex items-center justify-between">
+        <div class="text-black font-bold">
+          {{ filteredAlumni.length }} pessoas encontradas
+        </div>
+        <div class="flex gap-2">
+          <UButton
+            :variant="viewMode === 'table' ? 'solid' : 'subtle'"
+            :color="viewMode === 'table' ? 'primary' : 'neutral'"
+            size="sm"
+            icon="i-heroicons-table-cells"
+            @click="viewMode = 'table'"
+          >
+            Tabela
+          </UButton>
+          <UButton
+            :variant="viewMode === 'cards' ? 'solid' : 'subtle'"
+            :color="viewMode === 'cards' ? 'primary' : 'neutral'"
+            size="sm"
+            icon="i-heroicons-squares-2x2"
+            @click="viewMode = 'cards'"
+          >
+            Cards
+          </UButton>
+        </div>
+      </div>
 
-            <!-- Loading State -->
-            <div v-if="loading" class="flex justify-center py-12">
-                <UIcon
-                    name="i-heroicons-arrow-path"
-                    class="animate-spin h-8 w-8 text-primary-600"
-                />
-            </div>
+      <!-- Loading State -->
+      <div v-if="loading" class="flex justify-center py-12">
+        <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-primary-600" />
+      </div>
 
-            <!-- Alumni Grid -->
-            <div
-                v-else-if="filteredAlumni.length > 0"
-                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-                <UCard
-                    v-for="alumni in filteredAlumni"
-                    :key="alumni.id"
-                    class="hover:shadow-xl transition-all duration-200 cursor-pointer hover:-translate-y-0.5"
-                    @click="navigateTo(`/perfil/${alumni.id}`)"
-                >
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-4">
-                            <div class="shrink-0">
-                                <img
-                                    v-if="alumni.profile_image_url"
-                                    :src="alumni.profile_image_url"
-                                    :alt="alumni.name"
-                                    class="w-14 h-14 rounded-full object-cover"
-                                    @error="
-                                        (e: Event) =>
-                                            ((
-                                                e.target as HTMLImageElement
-                                            ).style.display = 'none')
-                                    "
-                                />
-                                <div
-                                    v-else
-                                    class="w-14 h-14 rounded-full bg-gradient-to-br from-primary-500 to-info-500 flex items-center justify-center text-white font-semibold text-lg"
-                                >
-                                    {{ alumni.name.charAt(0).toUpperCase() }}
-                                </div>
-                            </div>
+      <!-- Table View -->
+      <div v-else-if="filteredAlumni.length > 0 && viewMode === 'table'">
+        <AlumniTableHeader
+          :sort-by="sortBy"
+          :sort-order="sortOrder"
+          @sort="handleSort"
+        />
+        <div class="space-y-2">
+          <AlumniTableRow
+            v-for="alumni in filteredAlumni"
+            :key="alumni.id"
+            :alumni="alumni"
+            @click="navigateTo(`/perfil/${alumni.id}`)"
+          />
+        </div>
+      </div>
 
-                            <div class="flex-1 min-w-0">
-                                <div
-                                    class="flex items-start justify-between gap-2 mb-1"
-                                >
-                                    <h3 class="font-semibold truncate">
-                                        {{ alumni.name }}
-                                    </h3>
-                                    <UBadge
-                                        v-if="alumni.is_dropout"
-                                        color="neutral"
-                                        variant="subtle"
-                                        size="xs"
-                                    >
-                                        Não Concluído
-                                    </UBadge>
-                                    <UBadge
-                                        v-else-if="alumni.graduation_year"
-                                        color="primary"
-                                        variant="subtle"
-                                        size="xs"
-                                    >
-                                        '{{
-                                            alumni.graduation_year
-                                                .toString()
-                                                .slice(-2)
-                                        }}
-                                    </UBadge>
-                                </div>
-                                <p
-                                    v-if="alumni.role"
-                                    class="text-sm text-primary-600"
-                                >
-                                    {{ alumni.role }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div
-                            v-if="alumni.current_company"
-                            class="flex items-center gap-2 text-sm"
-                        >
-                            <UIcon
-                                name="i-heroicons-building-office"
-                                class="h-4 w-4 shrink-0"
-                            />
-                            <span class="truncate">{{
-                                alumni.current_company
-                            }}</span>
-                        </div>
-
-                        <div
-                            v-if="alumni.email"
-                            class="flex items-center gap-2 text-sm"
-                        >
-                            <UIcon
-                                name="i-heroicons-envelope"
-                                class="h-4 w-4 shrink-0"
-                            />
-                            <span class="truncate">{{ alumni.email }}</span>
-                        </div>
-
-                        <a
-                            v-if="alumni.linkedin"
-                            :href="alumni.linkedin"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="flex items-center gap-2 text-sm text-info-500 hover:text-info-600 font-medium"
-                            @click.stop
-                        >
-                            <UIcon
-                                name="i-heroicons-link"
-                                class="h-4 w-4 shrink-0"
-                            />
-                            <span class="truncate">LinkedIn</span>
-                        </a>
-
-                        <div
-                            v-if="
-                                alumni.technologies &&
-                                alumni.technologies.length > 0
-                            "
-                            class="pt-3 border-t"
-                        >
-                            <div class="flex flex-wrap gap-1.5">
-                                <UBadge
-                                    v-for="tech in alumni.technologies.slice(
-                                        0,
-                                        5,
-                                    )"
-                                    :key="tech"
-                                    color="primary"
-                                    variant="subtle"
-                                    size="xs"
-                                >
-                                    {{ tech }}
-                                </UBadge>
-                                <UBadge
-                                    v-if="alumni.technologies.length > 5"
-                                    variant="subtle"
-                                    size="xs"
-                                >
-                                    +{{ alumni.technologies.length - 5 }}
-                                </UBadge>
-                            </div>
-                        </div>
-                    </div>
-                </UCard>
-            </div>
+      <!-- Cards View -->
+      <div v-else-if="filteredAlumni.length > 0 && viewMode === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <AlumniCard
+          v-for="alumni in filteredAlumni"
+          :key="alumni.id"
+          :alumni="alumni"
+          @click="navigateTo(`/perfil/${alumni.id}`)"
+        />
+      </div>
 
             <!-- Empty State -->
             <div v-else class="text-center py-12">
@@ -232,25 +127,20 @@
 <script setup lang="ts">
 import type { Alumni } from "~/types/alumni";
 
-const alumni = ref<Alumni[]>([]);
-const loading = ref(true);
-const searchQuery = ref("");
-const selectedTechnologies = ref<string[]>([]);
-const hasProfile = ref(true);
-const showBackToTop = ref(false);
+const alumni = ref<Alumni[]>([])
+const loading = ref(true)
+const searchQuery = ref('')
+const selectedTechnologies = ref<string[]>([])
+const hasProfile = ref(true)
+const showBackToTop = ref(false)
+const viewMode = ref<'table' | 'cards'>('table')
+const sortBy = ref<'name' | null>(null)
+const sortOrder = ref<'asc' | 'desc'>('asc')
 
 const popularTechnologies = [
-    "JavaScript",
-    "Python",
-    "Java",
-    "TypeScript",
-    "React",
-    "Vue",
-    "Node.js",
-    "AWS",
-    "Docker",
-    "Kubernetes",
-];
+  'JavaScript', 'Python', 'Java', 'TypeScript', 'React',
+  'Vue', 'Node.js', 'AWS', 'Docker', 'Kubernetes'
+]
 
 // Shuffle array helper
 const shuffleArray = <T,>(array: T[]): T[] => {
@@ -294,36 +184,58 @@ const fetchAlumni = async () => {
 const filteredAlumni = computed(() => {
     let filtered = alumni.value;
 
-    // Text search
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        filtered = filtered.filter(
-            (a) =>
-                a.name?.toLowerCase().includes(query) ||
-                a.current_company?.toLowerCase().includes(query) ||
-                a.role?.toLowerCase().includes(query) ||
-                a.email?.toLowerCase().includes(query) ||
-                a.graduation_year?.toString().includes(query) ||
-                a.technologies?.some((t) => t.toLowerCase().includes(query)) ||
-                a.expertise_fields?.some((e) =>
-                    e.toLowerCase().includes(query),
-                ),
-        );
-    }
+  // Text search
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(a =>
+      a.name?.toLowerCase().includes(query) ||
+      a.current_company?.toLowerCase().includes(query) ||
+      a.role?.toLowerCase().includes(query) ||
+      a.email?.toLowerCase().includes(query) ||
+      a.graduation_year?.toString().includes(query) ||
+      a.technologies?.some(t => t.toLowerCase().includes(query)) ||
+      a.expertise_fields?.some(e => e.toLowerCase().includes(query))
+    )
+  }
 
-    // Technology filter
-    if (selectedTechnologies.value.length > 0) {
-        filtered = filtered.filter((a) =>
-            a.technologies?.some((t) =>
-                selectedTechnologies.value.some((st) =>
-                    t.toLowerCase().includes(st.toLowerCase()),
-                ),
-            ),
-        );
-    }
+  // Technology filter
+  if (selectedTechnologies.value.length > 0) {
+    filtered = filtered.filter(a =>
+      a.technologies?.some(t =>
+        selectedTechnologies.value.some(st =>
+          t.toLowerCase().includes(st.toLowerCase())
+        )
+      )
+    )
+  }
 
-    return filtered;
-});
+  // Sorting
+  if (sortBy.value === 'name') {
+    filtered = [...filtered].sort((a, b) => {
+      const nameA = a.name?.toLowerCase() || ''
+      const nameB = b.name?.toLowerCase() || ''
+
+      if (sortOrder.value === 'asc') {
+        return nameA.localeCompare(nameB)
+      } else {
+        return nameB.localeCompare(nameA)
+      }
+    })
+  }
+
+  return filtered
+})
+
+const handleSort = (column: 'name') => {
+  if (sortBy.value === column) {
+    // Toggle sort order if clicking same column
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    // New column, default to ascending
+    sortBy.value = column
+    sortOrder.value = 'asc'
+  }
+}
 
 const toggleTechnology = (tech: string) => {
     const index = selectedTechnologies.value.indexOf(tech);
