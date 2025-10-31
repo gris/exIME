@@ -14,11 +14,9 @@
             </div>
 
             <!-- Form Section -->
-            <UCard class="mb-8">
+            <UCard class="mb-8 bg-white dark:bg-neutral-800">
                 <template #header>
-                    <div
-                        class="flex items-center justify-between bg-white dark:bg-neutral-800"
-                    >
+                    <div class="flex items-center justify-between">
                         <h3 class="text-xl font-semibold">
                             {{
                                 formMode === "edit"
@@ -110,7 +108,7 @@
                             <UCard
                                 v-for="(topic, index) in formData.topics"
                                 :key="index"
-                                class="bg-neutral-50 dark:bg-neutral-700"
+                                class="bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700"
                             >
                                 <div class="space-y-3">
                                     <div
@@ -127,7 +125,7 @@
                                             variant="ghost"
                                             size="xs"
                                             icon="i-heroicons-trash"
-                                            @click="removeTopic(index)"
+                                            @click="confirmRemoveTopic(index)"
                                             :disabled="saving"
                                         >
                                             Remover
@@ -364,33 +362,42 @@
         </div>
 
         <!-- Delete Confirmation Modal -->
-        <UModal v-model="showDeleteModal">
-            <UCard v-if="encontroToDelete">
-                <template #header>
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="flex items-center justify-center w-10 h-10 rounded-full bg-error-100"
-                        >
-                            <UIcon
-                                name="i-heroicons-exclamation-triangle"
-                                class="h-6 w-6 text-error-600"
-                            />
-                        </div>
-                        <h3 class="text-lg font-semibold">
-                            Confirmar Exclusão
-                        </h3>
+        <UModal
+            v-if="encontroToDelete"
+            v-model:open="showDeleteModal"
+            title="Confirmar Exclusão"
+            :ui="{ footer: 'justify-end' }"
+        >
+            <template #header>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 rounded-full bg-error-100 dark:bg-error-900"
+                    >
+                        <UIcon
+                            name="i-heroicons-exclamation-triangle"
+                            class="h-6 w-6 text-error-600 dark:text-error-400"
+                        />
                     </div>
-                </template>
+                    <h3 class="text-lg font-semibold">Confirmar Exclusão</h3>
+                </div>
+            </template>
 
+            <template #body>
                 <div class="space-y-4">
-                    <p class="text-neutral-700">
+                    <p class="text-neutral-700 dark:text-neutral-300">
                         Tem certeza que deseja excluir este encontro?
                     </p>
-                    <div class="bg-neutral-50 p-4 rounded-lg">
-                        <div class="font-semibold text-neutral-900">
+                    <div
+                        class="bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 p-4 rounded-lg"
+                    >
+                        <div
+                            class="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
+                        >
                             {{ formatFullDate(encontroToDelete.date) }}
                         </div>
-                        <div class="text-sm text-neutral-600 mt-1">
+                        <div
+                            class="text-sm text-neutral-600 dark:text-neutral-300"
+                        >
                             {{ formatTime(encontroToDelete.time) }}
                         </div>
                         <div
@@ -398,37 +405,50 @@
                                 encontroToDelete.topics &&
                                 encontroToDelete.topics.length > 0
                             "
-                            class="text-sm text-neutral-500 mt-2"
+                            class="text-sm text-neutral-500 dark:text-neutral-400 mt-2"
                         >
                             {{ encontroToDelete.topics.length }} palestra(s)
                             cadastrada(s)
                         </div>
                     </div>
-                    <p class="text-sm text-error-600">
+                    <p class="text-sm text-error-600 dark:text-error-400">
                         Esta ação não pode ser desfeita.
                     </p>
                 </div>
+            </template>
 
-                <template #footer>
-                    <div class="flex gap-3 justify-end">
-                        <UButton
-                            variant="outline"
-                            @click="showDeleteModal = false"
-                            :disabled="deleting"
-                        >
-                            Cancelar
-                        </UButton>
-                        <UButton
-                            color="error"
-                            @click="deleteEncontro"
-                            :loading="deleting"
-                            :disabled="deleting"
-                        >
-                            Excluir Encontro
-                        </UButton>
-                    </div>
-                </template>
-            </UCard>
+            <template #footer="{ close }">
+                <UButton variant="outline" @click="close" :disabled="deleting">
+                    Cancelar
+                </UButton>
+                <UButton
+                    color="error"
+                    @click="deleteEncontro"
+                    :loading="deleting"
+                    :disabled="deleting"
+                >
+                    Excluir Encontro
+                </UButton>
+            </template>
+        </UModal>
+
+        <!-- Remove Topic Confirmation Modal -->
+        <UModal
+            v-if="topicToRemove !== null"
+            v-model:open="showRemoveTopicModal"
+            title="Remover Palestra"
+            :ui="{ footer: 'justify-end' }"
+        >
+            <template #body>
+                <p class="text-neutral-700 dark:text-neutral-300">
+                    Tem certeza que deseja remover esta palestra?
+                </p>
+            </template>
+
+            <template #footer="{ close }">
+                <UButton variant="outline" @click="close"> Cancelar </UButton>
+                <UButton color="error" @click="removeTopic"> Remover </UButton>
+            </template>
         </UModal>
     </div>
 </template>
@@ -447,6 +467,8 @@ const saving = ref(false);
 const deleting = ref(false);
 const showDeleteModal = ref(false);
 const encontroToDelete = ref<Encontro | null>(null);
+const showRemoveTopicModal = ref(false);
+const topicToRemove = ref<number | null>(null);
 
 // Form state
 const formMode = ref<"create" | "edit">("create");
@@ -485,8 +507,17 @@ const addTopic = () => {
     });
 };
 
-const removeTopic = (index: number) => {
-    formData.value.topics.splice(index, 1);
+const confirmRemoveTopic = (index: number) => {
+    topicToRemove.value = index;
+    showRemoveTopicModal.value = true;
+};
+
+const removeTopic = () => {
+    if (topicToRemove.value !== null) {
+        formData.value.topics.splice(topicToRemove.value, 1);
+        showRemoveTopicModal.value = false;
+        topicToRemove.value = null;
+    }
 };
 
 // Form submission
