@@ -15,7 +15,7 @@
     "@clerk/localizations": "^3.29.1",
     "@clerk/nuxt": "^1.13.3",
     "@nuxt/ui": "^4.1.0",
-    "@supabase/supabase-js": "^2.87.0",
+    "@supabase/supabase-js": "^2.99.2",
     "nuxt": "^4.2.0",
     "vue": "^3.5.25"
   },
