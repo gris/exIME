@@ -16,7 +16,7 @@
     "@clerk/nuxt": "^1.13.3",
     "@nuxt/ui": "^4.1.0",
     "@supabase/supabase-js": "^2.87.0",
-    "nuxt": "^4.2.0",
+    "nuxt": "^4.5.1",
     "vue": "^3.5.25"
   },
   "devDependencies": {
